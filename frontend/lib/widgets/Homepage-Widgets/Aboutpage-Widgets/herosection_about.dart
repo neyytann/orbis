@@ -14,6 +14,8 @@ class HerosectionAbout extends StatelessWidget{
         ),
         Expanded(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('About Us', style: TextStyle(
                 color: Colors.white,

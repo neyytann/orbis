@@ -13,9 +13,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: NavBar(),
       body: ListView(
         children: [
-          NavBar(),
           HeroSection(),
           FeaturesSection(),
           StatsSection(

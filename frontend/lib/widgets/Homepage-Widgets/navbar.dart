@@ -12,6 +12,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       backgroundColor: Colors.black,
       toolbarHeight: 95,
+      scrolledUnderElevation: 0,
       title: Padding(padding: EdgeInsetsGeometry.only(left: 50, right: 50),
         child: Row(
           children: [
