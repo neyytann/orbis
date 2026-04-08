@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interfaces/pages/contact_page.dart';
 import 'pages/home_page.dart';
 import 'pages/about_page.dart';
+import 'pages/register_page.dart';
 
 void main() {
   runApp(InternsProfile());
@@ -21,6 +22,7 @@ class InternsProfile extends StatelessWidget {
         '/': (context) => HomePage(),
         '/about': (context) => AboutPage(),
         '/contacts': (context) => ContactPage(),
+        'register': (context) => RegisterPage(),
       },
     );
   }

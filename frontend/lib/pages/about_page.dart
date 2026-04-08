@@ -16,6 +16,7 @@ class AboutPage extends StatelessWidget {
       body: ListView(
         children: [
           HerosectionAbout(),
+          SizedBox(height: 50),
           AboutIntro(),
           TeamSection(),
           SizedBox(height: 60),
