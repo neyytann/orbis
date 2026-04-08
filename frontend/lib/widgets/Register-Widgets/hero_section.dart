@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 
 class HeroSection extends StatefulWidget {
@@ -35,7 +34,7 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   bool _isPasswordValid(String password) {
-    final regex = RegExp(r'^(?=.[a-z])(?=.[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
+    final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
     return regex.hasMatch(password);
   }
 
@@ -82,7 +81,8 @@ class _HeroSectionState extends State<HeroSection> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/register'), // your backend URL
+        // Use your computer's LAN IP instead of localhost if testing on a device/emulator
+        Uri.parse('http://localhost:8080/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'first_name': _firstNameController.text,
@@ -100,9 +100,14 @@ class _HeroSectionState extends State<HeroSection> {
         );
         _formKey.currentState?.reset();
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${response.body}')));
+        final body = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error: ${body['error'] ?? body['errors'].toString()}',
+            ),
+          ),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(
@@ -217,41 +222,6 @@ class _HeroSectionState extends State<HeroSection> {
                                   ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 400,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        children: [
-                          const TextSpan(
-                            text: 'By creating an account, you agree to our ',
-                          ),
-                          TextSpan(
-                            text: 'Terms and Conditions',
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()..onTap = () {},
-                          ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()..onTap = () {},
-                          ),
-                        ],
                       ),
                     ),
                   ),
