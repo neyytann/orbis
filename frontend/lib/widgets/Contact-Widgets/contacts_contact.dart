@@ -1,24 +1,86 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class ContactsContact extends StatelessWidget {
+class ContactsContact extends StatefulWidget {
   const ContactsContact({super.key});
+
+  @override
+  State<ContactsContact> createState() => _ContactsContactState();
+}
+
+class _ContactsContactState extends State<ContactsContact> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final messageController = TextEditingController();
+
+  bool isLoading = false;
+
+  // 👉 CHANGE THIS to your Go backend URL
+  final String apiUrl = "http://YOUR_GO_BACKEND_IP:8080/send-email";
+
+  Future<void> sendEmail() async {
+    setState(() => isLoading = true);
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "name": nameController.text,
+          "email": emailController.text,
+          "message": messageController.text,
+        }),
+      );
+
+      setState(() => isLoading = false);
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Message sent successfully!")),
+        );
+
+        nameController.clear();
+        emailController.clear();
+        messageController.clear();
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed: ${response.body}")));
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 130, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
       child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: const [
                 Text(
                   'Get in touch with us',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
-                    fontWeight: FontWeight(500),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
@@ -62,15 +124,16 @@ class ContactsContact extends StatelessWidget {
               ],
             ),
           ),
+
           Expanded(
             child: Container(
               width: 400,
               height: 400,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 109, 108, 108),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 109, 108, 108),
               ),
               child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 40,
                   vertical: 30,
                 ),
@@ -78,11 +141,11 @@ class ContactsContact extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color.fromARGB(255, 46, 46, 46),
-                            const Color.fromARGB(255, 103, 103, 103),
+                            Color.fromARGB(255, 46, 46, 46),
+                            Color.fromARGB(255, 103, 103, 103),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -93,26 +156,26 @@ class ContactsContact extends StatelessWidget {
                         vertical: 3,
                       ),
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: nameController,
+                        decoration: const InputDecoration(
                           label: Text(
                             'Name',
                             style: TextStyle(
-                              color: const Color.fromARGB(209, 255, 255, 255),
+                              color: Color.fromARGB(209, 255, 255, 255),
                             ),
                           ),
                           border: InputBorder.none,
-                          hintStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
 
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color.fromARGB(255, 46, 46, 46),
-                            const Color.fromARGB(255, 103, 103, 103),
+                            Color.fromARGB(255, 46, 46, 46),
+                            Color.fromARGB(255, 103, 103, 103),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -123,26 +186,27 @@ class ContactsContact extends StatelessWidget {
                         vertical: 3,
                       ),
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: emailController,
+                        decoration: const InputDecoration(
                           label: Text(
                             'Email',
                             style: TextStyle(
-                              color: const Color.fromARGB(209, 255, 255, 255),
+                              color: Color.fromARGB(209, 255, 255, 255),
                             ),
                           ),
                           border: InputBorder.none,
-                          hintStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
+
                     Container(
                       height: 120,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color.fromARGB(255, 46, 46, 46),
-                            const Color.fromARGB(255, 103, 103, 103),
+                            Color.fromARGB(255, 46, 46, 46),
+                            Color.fromARGB(255, 103, 103, 103),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -153,26 +217,28 @@ class ContactsContact extends StatelessWidget {
                         vertical: 3,
                       ),
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: messageController,
+                        maxLines: 5,
+                        decoration: const InputDecoration(
                           label: Text(
                             'Message',
                             style: TextStyle(
-                              color: const Color.fromARGB(209, 255, 255, 255),
+                              color: Color.fromARGB(209, 255, 255, 255),
                             ),
                           ),
                           border: InputBorder.none,
-                          hintStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
+
                     Container(
                       height: 50,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color.fromARGB(255, 88, 167, 231),
-                            const Color.fromARGB(255, 65, 39, 235),
+                            Color.fromARGB(255, 88, 167, 231),
+                            Color.fromARGB(255, 65, 39, 235),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -181,21 +247,14 @@ class ContactsContact extends StatelessWidget {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () {},
-                          child: Padding(
-                            padding: EdgeInsetsGeometry.symmetric(
-                              horizontal: 15,
-                              vertical: 10,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Send Now!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w100,
-                                ),
+                          onTap: isLoading ? null : sendEmail,
+                          child: Center(
+                            child: Text(
+                              isLoading ? "Sending..." : "Send Now!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w100,
                               ),
                             ),
                           ),

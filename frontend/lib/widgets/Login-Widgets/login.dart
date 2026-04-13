@@ -148,17 +148,22 @@ class _LoginState extends State<Login> {
                     width: 400,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.black, Colors.grey],
+                        colors: [
+                          Colors.black,
+                          Color.fromARGB(154, 158, 158, 158),
+                        ],
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 3,
                     ),
+
                     child: TextField(
                       controller: _emailController,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.email, color: Colors.white),
                         border: InputBorder.none,
                         label: Text(
                           'Email',
@@ -188,7 +193,10 @@ class _LoginState extends State<Login> {
                     width: 400,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.black, Colors.grey],
+                        colors: [
+                          Colors.black,
+                          Color.fromARGB(158, 158, 158, 158),
+                        ],
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(
@@ -200,6 +208,7 @@ class _LoginState extends State<Login> {
                       obscureText: !_showPassword,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.password, color: Colors.white),
                         border: InputBorder.none,
                         label: const Text(
                           'Password',

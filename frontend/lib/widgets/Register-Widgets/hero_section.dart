@@ -179,6 +179,7 @@ class _HeroSectionState extends State<HeroSection> {
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Text(
                     'Create your Account',
@@ -197,6 +198,7 @@ class _HeroSectionState extends State<HeroSection> {
                       children: [
                         Expanded(
                           child: _buildFieldWithError(
+                            icon: Icons.person_2_outlined,
                             controller: _firstNameController,
                             label: 'First Name',
                             errorKey: 'firstName',
@@ -205,6 +207,7 @@ class _HeroSectionState extends State<HeroSection> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: _buildFieldWithError(
+                            icon: Icons.person_2_outlined,
                             controller: _lastNameController,
                             label: 'Last Name',
                             errorKey: 'lastName',
@@ -217,6 +220,7 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 10),
 
                   _buildFieldWithError(
+                    icon: Icons.apartment_outlined,
                     controller: _schoolController,
                     label: 'School',
                     errorKey: 'school',
@@ -225,6 +229,7 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 10),
 
                   _buildFieldWithError(
+                    icon: Icons.school_outlined,
                     controller: _programController,
                     label: 'Program',
                     errorKey: 'program',
@@ -233,6 +238,7 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 10),
 
                   _buildFieldWithError(
+                    icon: Icons.email_outlined,
                     controller: _emailController,
                     label: 'Email',
                     errorKey: 'email',
@@ -241,6 +247,7 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 10),
 
                   _buildFieldWithError(
+                    icon: Icons.phone_callback_outlined,
                     controller: _numberController,
                     label: 'Phone Number',
                     errorKey: 'phonenum',
@@ -257,6 +264,7 @@ class _HeroSectionState extends State<HeroSection> {
                           children: [
                             Expanded(
                               child: _buildFieldWithError(
+                                icon: Icons.password_outlined,
                                 controller: _passwordController,
                                 label: 'Password',
                                 errorKey: 'password',
@@ -281,6 +289,7 @@ class _HeroSectionState extends State<HeroSection> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: _buildFieldWithError(
+                                icon: Icons.password_outlined,
                                 controller: _confirmpassController,
                                 label: 'Confirm Password',
                                 errorKey: 'confirmpass',
@@ -403,6 +412,7 @@ class _HeroSectionState extends State<HeroSection> {
     required TextEditingController controller,
     required String label,
     required String errorKey,
+    IconData? icon,
     bool obscureText = false,
     Widget? suffixIcon,
     List<TextInputFormatter>? inputFormatters,
@@ -426,6 +436,7 @@ class _HeroSectionState extends State<HeroSection> {
             inputFormatters: inputFormatters,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
+              prefixIcon: icon != null ? Icon(icon, color: Colors.white) : null,
               label: Text(
                 label,
                 style: const TextStyle(color: Colors.white, fontSize: 12),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:interfaces/pages/about_page.dart';
+import 'package:interfaces/pages/register_page.dart';
 
 class HeroSection extends StatelessWidget {
   @override
@@ -53,7 +55,18 @@ class HeroSection extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation1, animation2) =>
+                                          RegisterPage(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
+                            },
                             child: Padding(
                               padding: EdgeInsetsGeometry.symmetric(
                                 horizontal: 15,
@@ -75,7 +88,17 @@ class HeroSection extends StatelessWidget {
                       ),
                       SizedBox(width: 2),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  AboutPage(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
+                        },
                         child: Row(
                           children: [
                             Text(

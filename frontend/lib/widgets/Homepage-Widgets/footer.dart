@@ -17,9 +17,32 @@ class Footer extends StatelessWidget {
               style: TextStyle(fontSize: 10, color: Colors.grey),
             ),
             Spacer(),
+            TextButton(
+              style: ButtonStyle(
+                overlayColor: WidgetStatePropertyAll(Colors.transparent),
+              ),
+              onPressed: () {},
+              child: Text(
+                'Privacy Policy',
+                style: TextStyle(color: Colors.grey, fontSize: 10),
+              ),
+            ),
             Text(
-              'Privacy Policy | Terms of Service',
-              style: TextStyle(color: Colors.grey, fontSize: 10),
+              '|',
+              style: TextStyle(
+                color: const Color.fromARGB(176, 158, 158, 158),
+                fontSize: 20,
+              ),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                overlayColor: WidgetStatePropertyAll(Colors.transparent),
+              ),
+              onPressed: () {},
+              child: Text(
+                'Terms of Service',
+                style: TextStyle(color: Colors.grey, fontSize: 10),
+              ),
             ),
           ],
         ),
