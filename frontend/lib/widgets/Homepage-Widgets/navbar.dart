@@ -8,6 +8,7 @@ import '../../pages/register_page.dart';
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   const NavBar({super.key});
 
+  @override
   Size get preferredSize => const Size.fromHeight(95);
   @override
   Widget build(BuildContext context) {
