@@ -89,7 +89,7 @@ class _LoginState extends State<Login> {
             context,
             PageRouteBuilder(
               pageBuilder: (_, __, ___) =>
-                  DashboardOverviewPage(username: data['username'] ?? ''),
+                  DashboardOverviewPage(firstName: data['firstName'] ?? ''),
               transitionDuration: Duration.zero,
               reverseTransitionDuration: Duration.zero,
             ),

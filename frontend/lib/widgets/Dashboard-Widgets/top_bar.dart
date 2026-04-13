@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
   final bool isDarkMode;
-  final String username;
+  final String firstName;
   final VoidCallback onToggleDarkMode;
 
   const TopBar({
     super.key,
     required this.isDarkMode,
-    required this.username,
+    required this.firstName,
     required this.onToggleDarkMode,
   });
 
@@ -22,7 +22,7 @@ class TopBar extends StatelessWidget {
         children: [
           const Spacer(),
           Text(
-            "Hi, $username",
+            "Hi, $firstName",
             style: TextStyle(
               color: isDarkMode ? Colors.white : Colors.black,
               fontWeight: FontWeight.bold,

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class WelcomeCard extends StatelessWidget {
   final bool isDarkMode;
-  final String username;
+  final String firstName;
   final String currentTime;
 
   const WelcomeCard({
     super.key,
     required this.isDarkMode,
-    required this.username,
+    required this.firstName,
     required this.currentTime,
   });
 
@@ -27,7 +27,7 @@ class WelcomeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Welcome back, ${username.split(' ')[0]}!",
+                  "Welcome back, ${firstName.split(' ')[0]}!",
                   style: TextStyle(
                     color: isDarkMode ? Colors.white : Colors.black,
                     fontSize: 20,

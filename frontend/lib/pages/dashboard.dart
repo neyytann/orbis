@@ -9,8 +9,8 @@ import '../widgets/Dashboard-Widgets/stats_cards.dart';
 import '../widgets/Dashboard-Widgets/admins_list.dart';
 
 class DashboardOverviewPage extends StatefulWidget {
-  final String username;
-  const DashboardOverviewPage({super.key, required this.username});
+  final String firstName;
+  const DashboardOverviewPage({super.key, required this.firstName});
 
   @override
   State<DashboardOverviewPage> createState() => _DashboardOverviewPageState();
@@ -56,7 +56,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://127.0.0.1:8080/dashboard?username=${widget.username}',
+          'http://127.0.0.1:8080/dashboard?firstName=${widget.firstName}',
         ),
       );
       if (response.statusCode == 200) {
@@ -110,7 +110,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
               children: [
                 TopBar(
                   isDarkMode: isDarkMode,
-                  username: widget.username,
+                  firstName: widget.firstName,
                   onToggleDarkMode: () =>
                       setState(() => isDarkMode = !isDarkMode),
                 ),
@@ -127,7 +127,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
                               const SizedBox(height: 20),
                               WelcomeCard(
                                 isDarkMode: isDarkMode,
-                                username: widget.username,
+                                firstName: widget.firstName,
                                 currentTime: _currentTime,
                               ),
                               const SizedBox(height: 20),
