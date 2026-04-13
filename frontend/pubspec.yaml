@@ -6,41 +6,24 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.3
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-HEAD
 
-  shared_preferences: ^2.5.5
-0706018df6cdfaba28fb4351026c06722bdc42c7
   http: ^1.1.0
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.2.2   # ✅ MOVE HERE
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-HEAD
-
- 0706018df6cdfaba28fb4351026c06722bdc42c7
 
 flutter:
-  fonts:
-    - family: RobotoMono
-      fonts:
-        - asset: assets/fonts/RobotoMono-Regular.ttf
-        - asset: assets/fonts/RobotoMono-Italic.ttf
   uses-material-design: true
 
   assets:
     - assets/images/
-
-  # fonts:
-  #   - family: Poppins
-  #     fonts:
-  #       - asset: assets/images/fonts/Poppins-Regular.ttf
-  #       - asset: assets/images/fonts/Poppins-Bold.ttf
