@@ -95,9 +95,9 @@ class _LoginState extends State<Login> {
               reverseTransitionDuration: Duration.zero,
             ),
           );
-        } else {
+        } else if (role == 'intern') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Access denied: Not an admin')),
+            SnackBar(content: Text('Intern login successful!')),
           );
         }
       } else {
@@ -134,7 +134,6 @@ class _LoginState extends State<Login> {
             child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
           ),
         ),
-
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -147,9 +146,7 @@ class _LoginState extends State<Login> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -167,7 +164,6 @@ class _LoginState extends State<Login> {
                       horizontal: 16,
                       vertical: 3,
                     ),
-
                     child: TextField(
                       controller: _emailController,
                       style: const TextStyle(color: Colors.white),
@@ -181,7 +177,6 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-
                   if (_emailError != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 5, left: 5),
@@ -192,9 +187,7 @@ class _LoginState extends State<Login> {
                     ),
                 ],
               ),
-
               const SizedBox(height: 10),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -240,7 +233,6 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-
                   if (_passwordError != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 5, left: 5),
@@ -251,9 +243,7 @@ class _LoginState extends State<Login> {
                     ),
                 ],
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 width: 400,
                 child: CheckboxListTile(
@@ -272,9 +262,7 @@ class _LoginState extends State<Login> {
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
-
               const SizedBox(height: 10),
-
               Container(
                 width: 400,
                 decoration: const BoxDecoration(
@@ -297,9 +285,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 15),
-
               SizedBox(
                 width: 400,
                 child: RichText(
