@@ -34,6 +34,16 @@ class Sidebar extends StatelessWidget {
           _buildIcon(Icons.person_outline, false, 'Interns', null, isDarkMode),
           const SizedBox(height: 10),
           _buildIcon(
+              Icons.access_time_outlined, false, 'Time Logs', null, isDarkMode),
+          const SizedBox(height: 10),
+          Divider(
+            color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+          ),
+          const SizedBox(height: 10),
+          _buildIcon(
               Icons.groups_outlined, false, 'Our Team', null, isDarkMode),
           const Spacer(),
           _buildIcon(Icons.logout, false, 'Logout', onLogout, isDarkMode),
