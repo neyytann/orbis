@@ -98,6 +98,8 @@ class _LoginState extends State<Login> {
             PageRouteBuilder(
               pageBuilder: (_, __, ___) => InternDashboardPage(
                 firstName: data['first_name'] ?? '',
+                userId:
+                    data['user_id'] ?? '', // Pass user ID to intern dashboard
                 // isNewUser = false (default)
               ),
               transitionDuration: Duration.zero,

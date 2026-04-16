@@ -146,6 +146,7 @@ class _HeroSectionState extends State<HeroSection> {
           MaterialPageRoute(
             builder: (_) => InternDashboardPage(
               firstName: _firstNameController.text,
+              userId: data['user_id'] ?? '',
             ),
           ),
         );
