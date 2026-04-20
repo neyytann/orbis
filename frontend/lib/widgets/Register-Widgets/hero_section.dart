@@ -117,11 +117,12 @@ class _HeroSectionState extends State<HeroSection> {
   Future<void> _submitForm() async {
     _validateForm();
     if (_errors.values.any((e) => e != null)) return;
+
     setState(() => _isSubmitting = true);
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/register'), // ← was /send-otp
+        Uri.parse('http://localhost:8080/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'first_name': _firstNameController.text.trim(),
@@ -135,21 +136,11 @@ class _HeroSectionState extends State<HeroSection> {
       );
 
       if (response.statusCode == 200) {
-        _showOtpDialog();
-        final data = jsonDecode(response.body);
-
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully!')),
+          const SnackBar(content: Text('OTP sent to your email')),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => InternMainPage(
-              firstName: _firstNameController.text,
-              userId: data['user_id'] ?? '',
-            ),
-          ),
-        );
+
+        _showOtpDialog();
       } else {
         final error = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -222,17 +213,19 @@ class _HeroSectionState extends State<HeroSection> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
         Navigator.pop(context);
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration Successful")),
+          const SnackBar(content: Text("Account created successfully!")),
         );
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => InternDashboardPage(
+            builder: (_) => InternMainPage(
               firstName: _firstNameController.text,
-              userId: data['intern_id'].toString(),
-              isDarkMode: true,
+              userId: '',
             ),
           ),
         );
@@ -372,23 +365,6 @@ class _HeroSectionState extends State<HeroSection> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  _buildCheck(
-                    "At least 8 characters",
-                    _passwordChecks['minLength']!,
-                  ),
-                  _buildCheck(
-                    "At least 1 uppercase",
-                    _passwordChecks['uppercase']!,
-                  ),
-                  _buildCheck(
-                    "At least 1 lowercase",
-                    _passwordChecks['lowercase']!,
-                  ),
-                  _buildCheck(
-                    "At least 1 number",
-                    _passwordChecks['number']!,
-                  ),
                   const SizedBox(height: 15),
                   Container(
                     width: 400,
@@ -417,41 +393,6 @@ class _HeroSectionState extends State<HeroSection> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    width: 400,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        children: [
-                          const TextSpan(
-                            text: "By creating an account, you agree to our ",
-                          ),
-                          TextSpan(
-                            text: "Terms and Conditions",
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()..onTap = () {},
-                          ),
-                          const TextSpan(text: " and "),
-                          TextSpan(
-                            text: "Privacy Policy",
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()..onTap = () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -476,10 +417,7 @@ class _HeroSectionState extends State<HeroSection> {
       children: [
         Container(
           width: 400,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 3,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -498,52 +436,20 @@ class _HeroSectionState extends State<HeroSection> {
               border: InputBorder.none,
               prefixIcon: icon != null ? Icon(icon, color: Colors.white) : null,
               labelText: label,
-              labelStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
+              labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
               suffixIcon: suffixIcon,
             ),
           ),
         ),
         if (_errors[errorKey] != null)
           Padding(
-            padding: const EdgeInsets.only(
-              left: 8,
-              top: 4,
-            ),
+            padding: const EdgeInsets.only(left: 8, top: 4),
             child: Text(
               _errors[errorKey]!,
-              style: const TextStyle(
-                color: Colors.red,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildCheck(String text, bool valid) {
-    return SizedBox(
-      width: 400,
-      child: Row(
-        children: [
-          Icon(
-            valid ? Icons.check_circle : Icons.circle_outlined,
-            color: valid ? Colors.green : Colors.grey,
-            size: 16,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: TextStyle(
-              color: valid ? Colors.green : Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
