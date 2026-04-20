@@ -33,7 +33,11 @@ class Sidebar extends StatelessWidget {
                 color: Color(0xFF00BFFF),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.circle, color: Colors.white, size: 18),
+              child: const Icon(
+                Icons.circle,
+                color: Colors.white,
+                size: 18,
+              ),
             ),
           ),
           const SizedBox(height: 15),
