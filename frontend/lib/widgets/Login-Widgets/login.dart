@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
+import 'package:interfaces/pages/admin_main.dart';
 import 'package:interfaces/pages/register_page.dart';
 import 'package:interfaces/pages/dashboard.dart';
 import 'package:interfaces/pages/intern_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:interfaces/pages/intern_dashboard.dart';
+import 'package:interfaces/pages/intern_main.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -86,7 +88,7 @@ class _LoginState extends State<Login> {
             context,
             PageRouteBuilder(
               pageBuilder: (_, __, ___) =>
-                  DashboardOverviewPage(firstName: data['first_name'] ?? ''),
+                  AdminMainPage(firstName: data['first_name'] ?? ''),
               transitionDuration: Duration.zero,
               reverseTransitionDuration: Duration.zero,
             ),

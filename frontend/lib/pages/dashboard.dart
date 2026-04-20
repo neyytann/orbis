@@ -2,27 +2,28 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:interfaces/pages/login_page.dart';
-import '../widgets/Dashboard-Widgets/sidebar.dart';
-import '../widgets/Dashboard-Widgets/top_bar.dart';
 import '../widgets/Dashboard-Widgets/welcome_card.dart';
 import '../widgets/Dashboard-Widgets/stats_cards.dart';
 import '../widgets/Dashboard-Widgets/bar_chart.dart';
 import '../widgets/Dashboard-Widgets/search_bar.dart';
 import '../widgets/Dashboard-Widgets/recent_activity.dart';
 import '../widgets/Dashboard-Widgets/right_panel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardOverviewPage extends StatefulWidget {
   final String firstName;
-  const DashboardOverviewPage({super.key, required this.firstName});
+  final bool isDarkMode;
+
+  const DashboardOverviewPage({
+    super.key,
+    required this.firstName,
+    required this.isDarkMode,
+  });
 
   @override
   State<DashboardOverviewPage> createState() => _DashboardOverviewPageState();
 }
 
 class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
-  bool isDarkMode = true;
   int totalInterns = 0;
   int newInterns = 0;
   int totalSchools = 0;
@@ -50,19 +51,14 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     super.dispose();
   }
 
-  // CLOCK TICK
   void _tick() {
     final now = DateTime.now();
-
     setState(() {
       _currentDate = now;
-
-      // TIME for welcome card
       final h = now.hour;
       final m = now.minute.toString().padLeft(2, '0');
       final period = h >= 12 ? 'PM' : 'AM';
       final hour12 = h % 12 == 0 ? 12 : h % 12;
-
       _currentTimeString = '$hour12:$m $period';
     });
   }
@@ -152,135 +148,65 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     }
   }
 
-  Future<void> handleLogout() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: isDarkMode ? const Color(0xFF242424) : Colors.white,
-        title: Text(
-          'Logout',
-          style: TextStyle(
-            color: isDarkMode ? Colors.white : Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(
-            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm != true) return;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('authToken');
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const LoginPage(),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
-      body: Row(
-        children: [
-          Sidebar(isDarkMode: isDarkMode, onLogout: handleLogout),
-          Expanded(
+    return Row(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TopBar(
-                  isDarkMode: isDarkMode,
+                DashboardSearchBar(isDarkMode: widget.isDarkMode),
+                const SizedBox(height: 20),
+                WelcomeCard(
+                  isDarkMode: widget.isDarkMode,
                   firstName: widget.firstName,
-                  onToggleDarkMode: () =>
-                      setState(() => isDarkMode = !isDarkMode),
+                  currentTime: _currentTimeString,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DashboardSearchBar(isDarkMode: isDarkMode),
-                              const SizedBox(height: 20),
-                              WelcomeCard(
-                                isDarkMode: isDarkMode,
-                                firstName: widget.firstName,
-                                currentTime: _currentTimeString,
-                              ),
-                              const SizedBox(height: 20),
-                              StatsCards(
-                                isDarkMode: isDarkMode,
-                                newInterns: newInterns,
-                                totalInterns: totalInterns,
-                                totalSchools: totalSchools,
-                              ),
-                              const SizedBox(height: 20),
-                              BarChart(
-                                isDarkMode: isDarkMode,
-                                yearlyStats: chartYearlyStats,
-                              ),
-                              const SizedBox(height: 20),
-                              RecentActivity(
-                                isDarkMode: isDarkMode,
-                                recentActivity: recentActivity,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      RightPanel(
-                        isDarkMode: isDarkMode,
-                        admins: admins,
-                        currentDate: _currentDate,
-                        calendarDate: _calendarDate,
-                        onPreviousMonth: () => setState(() {
-                          _calendarDate = DateTime(
-                            _calendarDate.year,
-                            _calendarDate.month - 1,
-                            1,
-                          );
-                        }),
-                        onNextMonth: () => setState(() {
-                          _calendarDate = DateTime(
-                            _calendarDate.year,
-                            _calendarDate.month + 1,
-                            1,
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 20),
+                StatsCards(
+                  isDarkMode: widget.isDarkMode,
+                  newInterns: newInterns,
+                  totalInterns: totalInterns,
+                  totalSchools: totalSchools,
+                ),
+                const SizedBox(height: 20),
+                BarChart(
+                  isDarkMode: widget.isDarkMode,
+                  yearlyStats: chartYearlyStats,
+                ),
+                const SizedBox(height: 20),
+                RecentActivity(
+                  isDarkMode: widget.isDarkMode,
+                  recentActivity: recentActivity,
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+        RightPanel(
+          isDarkMode: widget.isDarkMode,
+          admins: admins,
+          currentDate: _currentDate,
+          calendarDate: _calendarDate,
+          onPreviousMonth: () => setState(() {
+            _calendarDate = DateTime(
+              _calendarDate.year,
+              _calendarDate.month - 1,
+              1,
+            );
+          }),
+          onNextMonth: () => setState(() {
+            _calendarDate = DateTime(
+              _calendarDate.year,
+              _calendarDate.month + 1,
+              1,
+            );
+          }),
+        ),
+      ],
     );
   }
 }
