@@ -126,7 +126,7 @@ class _InternsListState extends State<InternsList> {
                 BoxDecoration(color: isDarkMode ? Colors.grey : Colors.black),
           ),
           Text(
-            intern['id_number'],
+            intern['id_number'] ?? '',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),

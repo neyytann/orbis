@@ -5,8 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:interfaces/pages/register_page.dart';
 import 'package:interfaces/pages/dashboard.dart';
 import 'package:interfaces/pages/intern_main.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:interfaces/pages/intern_dashboard.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -73,52 +71,114 @@ class _LoginState extends State<Login> {
 
       if (!mounted) return;
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print('RESPONSE DATA: $data');
-        final token = data['token'];
-        final role = data['role'];
+      final data = jsonDecode(response.body);
 
-        if (!mounted) return;
+      if (response.statusCode == 200) {
+        final role = data['role'];
 
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) =>
+            MaterialPageRoute(
+              builder: (_) =>
                   DashboardOverviewPage(firstName: data['first_name'] ?? ''),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
             ),
           );
         } else if (role == 'intern') {
           Navigator.pushReplacement(
             context,
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) => InternMainPage(
+            MaterialPageRoute(
+              builder: (_) => InternMainPage(
                 firstName: data['first_name'] ?? '',
                 userId: data['user_id'] ?? '',
               ),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
             ),
           );
         }
       } else {
-        final body = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(body['error'] ?? 'Login failed')),
+          SnackBar(content: Text(data['error'] ?? 'Login failed')),
         );
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Network error: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Network error: $e')),
+      );
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _forgotPassword(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:8080/forgot-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      if (!mounted) return;
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Reset link sent')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['error'] ?? 'Failed to send reset')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Network error: $e')),
+      );
+    }
+  }
+
+  void _showForgotPasswordDialog() {
+    final emailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Forgot Password"),
+          content: TextField(
+            controller: emailController,
+            decoration: const InputDecoration(
+              labelText: "Enter your email",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                final email = emailController.text.trim();
+
+                if (email.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Email is required")),
+                  );
+                  return;
+                }
+
+                Navigator.pop(context);
+                await _forgotPassword(email);
+              },
+              child: const Text("Send"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -151,118 +211,65 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Color.fromARGB(154, 158, 158, 158),
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 3,
-                    ),
-                    child: TextField(
-                      controller: _emailController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.email, color: Colors.white),
-                        border: InputBorder.none,
-                        label: Text(
-                          'Email',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
+              SizedBox(
+                width: 400,
+                child: TextField(
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.email, color: Colors.white),
+                    border: InputBorder.none,
+                    label: Text('Email', style: TextStyle(color: Colors.white)),
                   ),
-                  if (_emailError != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 5),
-                      child: Text(
-                        _emailError!,
-                        style: const TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Color.fromARGB(158, 158, 158, 158),
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 3,
-                    ),
-                    child: TextField(
-                      controller: _passwordController,
-                      obscureText: !_showPassword,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.password, color: Colors.white),
-                        border: InputBorder.none,
-                        label: const Text(
-                          'Password',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (_passwordError != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 5),
-                      child: Text(
-                        _passwordError!,
-                        style: const TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                ],
+                ),
               ),
               const SizedBox(height: 10),
               SizedBox(
-                  width: 400,
-                  child: Align(
-                    alignment: AlignmentGeometry.centerLeft,
-                    child: TextButton(
-                        style: ButtonStyle(
-                            overlayColor:
-                                WidgetStateProperty.all(Colors.transparent)),
-                        onPressed: () {},
-                        child: Text(
-                          'Forgot Password',
-                          style: TextStyle(
-                              color: const Color.fromARGB(223, 255, 255, 255)),
-                        )),
-                  )),
+                width: 400,
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: !_showPassword,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.password, color: Colors.white),
+                    border: InputBorder.none,
+                    label: const Text(
+                      'Password',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _showPassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 400,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    ),
+                    onPressed: _showForgotPasswordDialog,
+                    child: const Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                        color: Color.fromARGB(223, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
               Container(
                 width: 400,
@@ -305,11 +312,8 @@ class _LoginState extends State<Login> {
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              PageRouteBuilder(
-                                pageBuilder: (_, __, ___) =>
-                                    const RegisterPage(),
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero,
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterPage(),
                               ),
                             );
                           },

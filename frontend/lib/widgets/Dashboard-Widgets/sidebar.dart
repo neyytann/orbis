@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interfaces/pages/dashboard.dart';
 import 'package:interfaces/pages/interns_list.dart';
-import 'package:interfaces/pages/dashboard.dart';
 
 class Sidebar extends StatelessWidget {
   final bool isDarkMode;
@@ -45,19 +43,7 @@ class Sidebar extends StatelessWidget {
             Icons.grid_view,
             false,
             'Dashboard',
-            () {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      DashboardOverviewPage(
-                    firstName: '',
-                  ),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
-                ),
-              );
-            },
+            () {},
             isDarkMode,
           ),
           const SizedBox(height: 10),
