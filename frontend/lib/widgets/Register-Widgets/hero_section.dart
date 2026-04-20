@@ -115,25 +115,30 @@ class _HeroSectionState extends State<HeroSection> {
 
   Future<void> _submitForm() async {
     _validateForm();
-
     if (_errors.values.any((e) => e != null)) return;
-
     setState(() => _isSubmitting = true);
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/send-otp'),
+        Uri.parse('http://localhost:8080/register'), // ← was /send-otp
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
+          'first_name': _firstNameController.text.trim(),
+          'last_name': _lastNameController.text.trim(),
+          'school': _schoolController.text.trim(),
+          'program': _programController.text.trim(),
           'email': _emailController.text.trim(),
+          'password': _passwordController.text.trim(),
+          'phone_number': _numberController.text.trim(),
         }),
       );
 
       if (response.statusCode == 200) {
         _showOtpDialog();
       } else {
+        final error = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to send OTP")),
+          SnackBar(content: Text(error['error'] ?? "Registration failed")),
         );
       }
     } catch (e) {
@@ -195,42 +200,30 @@ class _HeroSectionState extends State<HeroSection> {
         Uri.parse('http://localhost:8080/verify-otp'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'otp': otp,
           'email': _emailController.text.trim(),
-          'first_name': _firstNameController.text.trim(),
-          'last_name': _lastNameController.text.trim(),
-          'school': _schoolController.text.trim(),
-          'program': _programController.text.trim(),
-          'phone_number': _numberController.text.trim(),
-          'password': _passwordController.text.trim(),
+          'otp': otp,
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         Navigator.pop(context);
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registration Successful")),
         );
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (_) => InternDashboardPage(
               firstName: _firstNameController.text,
-              userId: data['user_id'].toString(),
+              userId: data['intern_id'].toString(),
             ),
           ),
         );
       } else {
         final error = jsonDecode(response.body);
-
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error['message'] ?? "Invalid OTP"),
-          ),
+          SnackBar(content: Text(error['error'] ?? "Invalid OTP")),
         );
       }
     } catch (e) {

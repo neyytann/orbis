@@ -15,7 +15,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   bool _showPassword = false;
   bool _isLoading = false;
 
@@ -75,10 +74,9 @@ class _LoginState extends State<Login> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('RESPONSE DATA: $data'); // Debugging line
+        print('RESPONSE DATA: $data');
         final token = data['token'];
         final role = data['role'];
-
 
         if (!mounted) return;
 
@@ -98,9 +96,7 @@ class _LoginState extends State<Login> {
             PageRouteBuilder(
               pageBuilder: (_, __, ___) => InternDashboardPage(
                 firstName: data['first_name'] ?? '',
-                userId:
-                    data['user_id'] ?? '', // Pass user ID to intern dashboard
-                // isNewUser = false (default)
+                userId: data['user_id'] ?? '',
               ),
               transitionDuration: Duration.zero,
               reverseTransitionDuration: Duration.zero,
@@ -122,7 +118,7 @@ class _LoginState extends State<Login> {
       if (!mounted) return;
       setState(() => _isLoading = false);
     }
-  } // ← this closing brace was missing
+  }
 
   @override
   void dispose() {
@@ -252,18 +248,20 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                width: 400,
-                child:Align(
-                  alignment: AlignmentGeometry.centerLeft,
-                  child: TextButton(
-                  style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.all(Colors.transparent)
-                  ), onPressed: (){}, child: Text('Forgot Password', style: TextStyle(
-                  color: const Color.fromARGB(223, 255, 255, 255)
-                ),)),
-                )
-                
-              ),
+                  width: 400,
+                  child: Align(
+                    alignment: AlignmentGeometry.centerLeft,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            overlayColor:
+                                WidgetStateProperty.all(Colors.transparent)),
+                        onPressed: () {},
+                        child: Text(
+                          'Forgot Password',
+                          style: TextStyle(
+                              color: const Color.fromARGB(223, 255, 255, 255)),
+                        )),
+                  )),
               const SizedBox(height: 10),
               Container(
                 width: 400,
