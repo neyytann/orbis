@@ -13,7 +13,7 @@ class InternsList extends StatefulWidget {
 }
 
 class _InternsListState extends State<InternsList> {
-  bool isDarkMode = false;
+  bool isDarkMode = true;
   String firstName = "Admin";
 
   List interns = [];
@@ -145,6 +145,8 @@ class _InternsListState extends State<InternsList> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
+              style: ButtonStyle(
+                  overlayColor: WidgetStatePropertyAll(Colors.blue)),
               onPressed: () {},
               child: const Text("VIEW PROFILE"),
             ),
@@ -228,9 +230,7 @@ class _InternsListState extends State<InternsList> {
                                 horizontal: 15,
                               ),
                               decoration: BoxDecoration(
-                                color: isDarkMode
-                                    ? const Color(0xFF2B2B2B)
-                                    : Colors.white,
+                                color: isDarkMode ? Colors.white : Colors.black,
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: DropdownButtonHideUnderline(
