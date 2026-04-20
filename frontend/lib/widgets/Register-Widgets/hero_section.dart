@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:interfaces/pages/intern_dashboard.dart';
 import 'package:interfaces/pages/intern_main.dart';
+import 'package:interfaces/pages/login_page.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -223,10 +224,7 @@ class _HeroSectionState extends State<HeroSection> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => InternMainPage(
-              firstName: _firstNameController.text,
-              userId: '',
-            ),
+            builder: (_) => LoginPage(),
           ),
         );
       } else {
@@ -390,6 +388,41 @@ class _HeroSectionState extends State<HeroSection> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                         ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  SizedBox(
+                    width: 400,
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: "By creating an account, you agree to our ",
+                          ),
+                          TextSpan(
+                            text: "Terms and Conditions",
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()..onTap = () {},
+                          ),
+                          const TextSpan(text: " and "),
+                          TextSpan(
+                            text: "Privacy Policy",
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()..onTap = () {},
+                          ),
+                        ],
                       ),
                     ),
                   ),
