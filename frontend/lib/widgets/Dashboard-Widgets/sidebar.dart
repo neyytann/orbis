@@ -19,7 +19,6 @@ class Sidebar extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 5),
-
           Image.asset(
             'assets/images/logo.png',
             width: 65,
@@ -38,22 +37,26 @@ class Sidebar extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: 15),
-
           _buildIcon(
             context,
             Icons.grid_view,
             false,
             'Dashboard',
             () {
-              
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      InternsList(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
             },
             isDarkMode,
           ),
-
           const SizedBox(height: 10),
-
           _buildIcon(
             context,
             Icons.person_outline,
@@ -61,54 +64,43 @@ class Sidebar extends StatelessWidget {
             'Interns',
             () {
               Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) =>
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
                       InternsList(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                );
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
             },
             isDarkMode,
           ),
-
           const SizedBox(height: 10),
-
           _buildIcon(
             context,
             Icons.access_time_outlined,
             false,
             'Time Logs',
-            () {
-            },
+            () {},
             isDarkMode,
           ),
-
           const SizedBox(height: 10),
-
           Divider(
             color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
             thickness: 1,
             indent: 10,
             endIndent: 10,
           ),
-
           const SizedBox(height: 10),
-
           _buildIcon(
             context,
             Icons.groups_outlined,
             false,
             'Developers Team',
-            () {
-              
-            },
+            () {},
             isDarkMode,
           ),
-
           const Spacer(),
-
           _buildIcon(
             context,
             Icons.logout,
@@ -117,7 +109,6 @@ class Sidebar extends StatelessWidget {
             onLogout,
             isDarkMode,
           ),
-
           const SizedBox(height: 20),
         ],
       ),
