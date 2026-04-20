@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 import 'package:interfaces/pages/register_page.dart';
 import 'package:interfaces/pages/dashboard.dart';
+import 'package:interfaces/pages/intern_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:interfaces/pages/intern_dashboard.dart';
 
@@ -15,7 +16,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   bool _showPassword = false;
   bool _isLoading = false;
 
@@ -79,7 +79,6 @@ class _LoginState extends State<Login> {
         final token = data['token'];
         final role = data['role'];
 
-
         if (!mounted) return;
 
         if (role == 'admin') {
@@ -96,7 +95,7 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
             context,
             PageRouteBuilder(
-              pageBuilder: (_, __, ___) => InternDashboardPage(
+              pageBuilder: (_, __, ___) => InternMainPage(
                 firstName: data['first_name'] ?? '',
                 userId:
                     data['user_id'] ?? '', // Pass user ID to intern dashboard
@@ -252,18 +251,20 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                width: 400,
-                child:Align(
-                  alignment: AlignmentGeometry.centerLeft,
-                  child: TextButton(
-                  style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.all(Colors.transparent)
-                  ), onPressed: (){}, child: Text('Forgot Password', style: TextStyle(
-                  color: const Color.fromARGB(223, 255, 255, 255)
-                ),)),
-                )
-                
-              ),
+                  width: 400,
+                  child: Align(
+                    alignment: AlignmentGeometry.centerLeft,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            overlayColor:
+                                WidgetStateProperty.all(Colors.transparent)),
+                        onPressed: () {},
+                        child: Text(
+                          'Forgot Password',
+                          style: TextStyle(
+                              color: const Color.fromARGB(223, 255, 255, 255)),
+                        )),
+                  )),
               const SizedBox(height: 10),
               Container(
                 width: 400,

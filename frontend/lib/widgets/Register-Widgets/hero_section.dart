@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:interfaces/pages/intern_dashboard.dart';
+import 'package:interfaces/pages/intern_main.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -144,7 +144,7 @@ class _HeroSectionState extends State<HeroSection> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => InternDashboardPage(
+            builder: (_) => InternMainPage(
               firstName: _firstNameController.text,
               userId: data['user_id'] ?? '',
             ),
