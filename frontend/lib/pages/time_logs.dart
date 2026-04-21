@@ -24,10 +24,10 @@ class TimeLogsPage extends StatefulWidget {
 }
 
 class _TimeLogsPageState extends State<TimeLogsPage> {
-  int totalInterns = 12;
-  int presentToday = 5;
-  int lateToday = 2;
-  int absentToday = 7;
+  int totalInterns = 0;
+  int presentToday = 0;
+  int lateToday = 0;
+  int absentToday = 0;
 
   List<String> internNames = [];
   String? selectedIntern;
@@ -99,6 +99,9 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
         Uri.parse(
             'http://127.0.0.1:8080/timelogs/intern?name=${Uri.encodeComponent(name)}'),
       );
+      debugPrint('>>> timelogs/intern status: ${response.statusCode}');
+      debugPrint('>>> timelogs/intern body: ${response.body}');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
@@ -107,129 +110,12 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
         });
       }
     } catch (e) {
-      print('Error fetching logs for intern: $e');
-      _loadMockLogs();
+      debugPrint('>>> Error fetching logs: $e');
+      setState(() {
+        allLogs = [];
+        applyFilters();
+      });
     }
-  }
-
-  void _loadMockLogs() {
-    setState(() {
-      allLogs = [
-        {
-          'date': 'April 14',
-          'day': 'Tue',
-          'time_in': '8:00 AM',
-          'time_out': '–',
-          'total_hours': 'In Progress',
-          'status': 'Present',
-        },
-        {
-          'date': 'April 13',
-          'day': 'Mon',
-          'time_in': '8:00 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '8h',
-          'status': 'Present',
-        },
-        {
-          'date': 'April 12',
-          'day': 'Sun',
-          'time_in': '–',
-          'time_out': '–',
-          'total_hours': '–',
-          'status': 'Weekend',
-        },
-        {
-          'date': 'April 11',
-          'day': 'Sat',
-          'time_in': '–',
-          'time_out': '–',
-          'total_hours': '–',
-          'status': 'Weekend',
-        },
-        {
-          'date': 'April 10',
-          'day': 'Fri',
-          'time_in': '8:12 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '7h 48m',
-          'status': 'Late',
-        },
-        {
-          'date': 'April 9',
-          'day': 'Thu',
-          'time_in': '8:00 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '8h',
-          'status': 'Present',
-        },
-        {
-          'date': 'April 8',
-          'day': 'Wed',
-          'time_in': '8:02 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '7h 58m',
-          'status': 'Late',
-        },
-        {
-          'date': 'April 7',
-          'day': 'Tue',
-          'time_in': '7:45 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '8h',
-          'status': 'Present',
-        },
-        {
-          'date': 'April 6',
-          'day': 'Mon',
-          'time_in': '–',
-          'time_out': '–',
-          'total_hours': '–',
-          'status': 'Absent',
-        },
-        {
-          'date': 'April 5',
-          'day': 'Sun',
-          'time_in': '–',
-          'time_out': '–',
-          'total_hours': '–',
-          'status': 'Weekend',
-        },
-        {
-          'date': 'April 4',
-          'day': 'Sat',
-          'time_in': '–',
-          'time_out': '–',
-          'total_hours': '–',
-          'status': 'Weekend',
-        },
-        {
-          'date': 'April 3',
-          'day': 'Fri',
-          'time_in': '8:00 AM',
-          'time_out': '1:00 PM',
-          'total_hours': '5h',
-          'status': 'Half Day',
-        },
-        {
-          'date': 'April 2',
-          'day': 'Thu',
-          'time_in': '8:00 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '8h',
-          'status': 'Present',
-        },
-        {
-          'date': 'April 1',
-          'day': 'Wed',
-          'time_in': '8:00 AM',
-          'time_out': '5:00 PM',
-          'total_hours': '8h',
-          'status': 'Present',
-        },
-      ];
-      applyFilters();
-    });
   }
 
   void applyFilters() {
