@@ -74,10 +74,14 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
       final response = await http.get(
         Uri.parse('http://127.0.0.1:8080/interns/names'),
       );
+      debugPrint('>>> interns/names status: ${response.statusCode}');
+      debugPrint('>>> interns/names body: ${response.body}');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           internNames = data.map((e) => e.toString()).toList();
+          debugPrint('>>> internNames: $internNames');
           if (internNames.isNotEmpty) {
             selectedIntern = internNames.first;
             fetchLogsForIntern(selectedIntern!);
@@ -85,18 +89,7 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
         });
       }
     } catch (e) {
-      print('Error fetching interns: $e');
-      setState(() {
-        internNames = [
-          'Juan Dela Cruz',
-          'Maria Santos',
-          'Jose Reyes',
-          'Ana Garcia',
-          'Carlo Mendoza',
-        ];
-        selectedIntern = internNames.first;
-        _loadMockLogs();
-      });
+      debugPrint('>>> Error fetching interns: $e');
     }
   }
 
