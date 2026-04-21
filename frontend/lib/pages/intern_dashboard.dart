@@ -122,7 +122,9 @@ class _InternDashboardPageState extends State<InternDashboardPage> {
           }
         });
 
-        if (requiredOjtHours == 0) {
+        final remainingHoursFromServer =
+            (data['remaining_hours'] as num? ?? 0).toDouble();
+        if (totalHoursRendered == 0 && remainingHoursFromServer == 0) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => _promptOjtHours());
         }
