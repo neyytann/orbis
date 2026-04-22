@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import '../widgets/Intern-My-Profile-Widgets/intern_profile_image_section.dart';
 import '../widgets/Intern-My-Profile-Widgets/intern_profile_resume_preview.dart';
 import '../widgets/Intern-My-Profile-Widgets/intern_profile_action_buttons.dart';
@@ -40,6 +41,20 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
   String? _resumeUrl;
   bool _isLoading = false;
   bool _isSaving = false;
+
+  /// Controls whether the form fields are editable.
+  /// Starts as false — view-only by default.
+  bool _isEditing = false;
+
+  // Snapshot of values at the moment editing begins — used to restore on cancel
+  String _snapFirstName = '';
+  String _snapLastName = '';
+  String _snapProgram = '';
+  String _snapSchool = '';
+  String _snapPhone = '';
+  File? _snapProfileImage;
+  String? _snapProfileImageUrl;
+  File? _snapResumeFile;
 
   @override
   void initState() {
@@ -105,13 +120,12 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
   }
 
   Future<void> _pickResume() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 90,
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
     );
-    if (picked != null) {
-      setState(() => _resumeFile = File(picked.path));
+    if (result != null && result.files.single.path != null) {
+      setState(() => _resumeFile = File(result.files.single.path!));
     }
   }
 
@@ -150,6 +164,8 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Profile updated successfully!')),
           );
+          // Return to view-only mode after a successful save
+          setState(() => _isEditing = false);
         }
         _fetchProfile();
       } else {
@@ -164,6 +180,35 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     } finally {
       setState(() => _isSaving = false);
     }
+  }
+
+  /// Cancels editing and restores the pre-edit snapshot — no network call,
+  /// no loading flicker.
+  void _cancelEditing() {
+    setState(() {
+      _isEditing = false;
+      _firstNameController.text = _snapFirstName;
+      _lastNameController.text = _snapLastName;
+      _programController.text = _snapProgram;
+      _schoolController.text = _snapSchool;
+      _phoneController.text = _snapPhone;
+      _profileImage = _snapProfileImage;
+      _profileImageUrl = _snapProfileImageUrl;
+      _resumeFile = _snapResumeFile;
+    });
+  }
+
+  void _enterEditing() {
+    // Take a snapshot before any edits happen
+    _snapFirstName = _firstNameController.text;
+    _snapLastName = _lastNameController.text;
+    _snapProgram = _programController.text;
+    _snapSchool = _schoolController.text;
+    _snapPhone = _phoneController.text;
+    _snapProfileImage = _profileImage;
+    _snapProfileImageUrl = _profileImageUrl;
+    _snapResumeFile = _resumeFile;
+    setState(() => _isEditing = true);
   }
 
   @override
@@ -182,91 +227,137 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ── Title + Edit/Cancel button row ───────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'My Profile',
+                      style: TextStyle(
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    _isEditing
+                        ? OutlinedButton.icon(
+                            onPressed: _cancelEditing,
+                            icon: const Icon(Icons.close, size: 16),
+                            label: const Text('Cancel'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: widget.isDarkMode
+                                  ? Colors.white70
+                                  : Colors.black54,
+                              side: BorderSide(
+                                color: widget.isDarkMode
+                                    ? Colors.white30
+                                    : Colors.black26,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          )
+                        : FilledButton.icon(
+                            onPressed: _enterEditing,
+                            icon: const Icon(Icons.edit, size: 16),
+                            label: const Text('Edit Profile'),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: widget.isDarkMode
+                                  ? const Color(0xFF4A90D9)
+                                  : const Color(0xFF1A73E8),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // ── Profile image (editing controls hidden in view mode) ──
                 InternProfileImageSection(
                   isDarkMode: widget.isDarkMode,
                   profileImage: _profileImage,
                   profileImageUrl: _profileImageUrl,
                   idNumber: idNumber,
-                  onChangeImage: _pickProfileImage,
-                  onRemoveImage: _removeProfileImage,
+                  onChangeImage: _isEditing ? _pickProfileImage : () {},
+                  onRemoveImage: _isEditing ? _removeProfileImage : () {},
                 ),
                 const SizedBox(height: 24),
-                // First Name + Last Name
+
+                // ── First Name + Last Name ────────────────────────────────
                 Row(
                   children: [
-                    Expanded(
-                      child: _buildLabel('First Name'),
-                    ),
+                    Expanded(child: _buildLabel('First Name')),
                     const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildLabel('Last Name'),
-                    ),
+                    Expanded(child: _buildLabel('Last Name')),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     Expanded(
-                      child: _buildTextField(
-                        controller: _firstNameController,
-                      ),
+                      child: _buildField(controller: _firstNameController),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: _buildTextField(
-                        controller: _lastNameController,
-                      ),
+                      child: _buildField(controller: _lastNameController),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
+
                 _buildLabel('Program'),
                 const SizedBox(height: 6),
-                _buildTextField(controller: _programController),
+                _buildField(controller: _programController),
                 const SizedBox(height: 16),
+
                 _buildLabel('School'),
                 const SizedBox(height: 6),
-                _buildTextField(controller: _schoolController),
+                _buildField(controller: _schoolController),
                 const SizedBox(height: 16),
+
                 Row(
                   children: [
-                    Expanded(
-                      child: _buildLabel('Email'),
-                    ),
+                    Expanded(child: _buildLabel('Email')),
                     const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildLabel('Phone Number'),
-                    ),
+                    Expanded(child: _buildLabel('Phone Number')),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
+                    // Email is always read-only (business rule)
                     Expanded(
-                      child: _buildTextField(
+                      child: _buildField(
                         controller: _emailController,
-                        readOnly: true,
+                        alwaysReadOnly: true,
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: _buildTextField(
-                        controller: _phoneController,
-                      ),
+                      child: _buildField(controller: _phoneController),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
-                InternProfileActionButtons(
-                  isDarkMode: widget.isDarkMode,
-                  isSaving: _isSaving,
-                  onSave: _saveChanges,
-                  onUploadResume: _pickResume,
-                ),
+
+                // ── Action buttons only visible when editing ──────────────
+                if (_isEditing)
+                  InternProfileActionButtons(
+                    isDarkMode: widget.isDarkMode,
+                    isSaving: _isSaving,
+                    onSave: _saveChanges,
+                    onUploadResume: _pickResume,
+                  ),
               ],
             ),
           ),
           const SizedBox(width: 32),
+
           // Right — resume preview
           InternProfileResumePreview(
             isDarkMode: widget.isDarkMode,
@@ -282,33 +373,38 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     return Text(
       text,
       style: TextStyle(
-        color: widget.isDarkMode ? Colors.white : Colors.black,
-        fontSize: 14,
+        color: widget.isDarkMode
+            ? const Color(0xFF9E9E9E)
+            : const Color(0xFF757575),
+        fontSize: 12,
         fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
       ),
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildField({
     required TextEditingController controller,
-    bool readOnly = false,
+    bool alwaysReadOnly = false,
   }) {
+    final effectiveReadOnly = alwaysReadOnly || !_isEditing;
+
     return TextField(
       controller: controller,
-      readOnly: readOnly,
+      readOnly: effectiveReadOnly,
       style: TextStyle(
-        color: widget.isDarkMode ? Colors.white : Colors.black,
+        color: (alwaysReadOnly || !_isEditing)
+            ? (widget.isDarkMode
+                ? const Color(0xFF9E9E9E)
+                : const Color(0xFF757575))
+            : (widget.isDarkMode ? Colors.white : Colors.black),
         fontSize: 14,
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: readOnly
-            ? (widget.isDarkMode
-                ? const Color(0xFF2A2A2A)
-                : const Color(0xFFEEEEEE))
-            : (widget.isDarkMode
-                ? const Color(0xFF2C2C2C)
-                : const Color(0xFFF5F5F5)),
+        fillColor: widget.isDarkMode
+            ? const Color(0xFF2C2C2C)
+            : const Color(0xFFF5F5F5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
