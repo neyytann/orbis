@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'calendar.dart';
-import 'admins_list.dart';
+import 'dahsboard_intern_list.dart';
 
 class RightPanel extends StatelessWidget {
   final bool isDarkMode;
-  final List<dynamic> admins;
+  final List<dynamic> interns;
   final DateTime currentDate;
   final DateTime calendarDate;
   final VoidCallback onPreviousMonth;
@@ -13,7 +13,7 @@ class RightPanel extends StatelessWidget {
   const RightPanel({
     super.key,
     required this.isDarkMode,
-    required this.admins,
+    required this.interns,
     required this.currentDate,
     required this.calendarDate,
     required this.onPreviousMonth,
@@ -38,7 +38,7 @@ class RightPanel extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: AdminsList(isDarkMode: isDarkMode, admins: admins),
+            child: DahsboardInternList(isDarkMode: isDarkMode, admins: interns),
           ),
         ],
       ),

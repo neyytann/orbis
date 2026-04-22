@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 
-class AdminsList extends StatelessWidget {
+class DahsboardInternList extends StatelessWidget {
   final bool isDarkMode;
   final List<dynamic> admins;
 
-  const AdminsList({super.key, required this.isDarkMode, required this.admins});
+  const DahsboardInternList(
+      {super.key, required this.isDarkMode, required this.admins});
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'on-time':
+        return const Color(0xFF4CAF50);
+      case 'late':
+        return const Color(0xFFFFA726);
+      case 'absent':
+        return const Color(0xFFEF5350);
+      case 'half day':
+        return const Color(0xFF42A5F5);
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +28,7 @@ class AdminsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Admins",
+          "Interns",
           style: TextStyle(
             color: isDarkMode ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
@@ -22,16 +38,15 @@ class AdminsList extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
-            color: isDarkMode
-                ? const Color(0xFF2E2E2E)
-                : const Color(0xFFE8E8E8),
+            color:
+                isDarkMode ? const Color(0xFF2E2E2E) : const Color(0xFFE8E8E8),
             borderRadius: BorderRadius.circular(10),
           ),
           child: admins.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(15),
                   child: Text(
-                    "No admins found",
+                    "No interns found",
                     style: TextStyle(
                       color: isDarkMode ? Colors.grey : Colors.grey[600],
                     ),
@@ -47,17 +62,33 @@ class AdminsList extends StatelessWidget {
                     height: 1,
                   ),
                   itemBuilder: (context, index) {
+                    final intern = admins[index];
+                    final status = intern['status'] ?? 'absent';
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 12,
                       ),
-                      child: Text(
-                        "${index + 1}. ${admins[index]['first_name']} ${admins[index]['last_name']}",
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontSize: 13,
-                        ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "${index + 1}. ${intern['first_name']} ${intern['last_name']}",
+                              style: TextStyle(
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: _statusColor(status),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },

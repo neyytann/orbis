@@ -27,7 +27,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
   int totalInterns = 0;
   int newInterns = 0;
   int totalSchools = 0;
-  List<dynamic> admins = [];
+  List<dynamic> interns = [];
   List<Map<String, dynamic>> chartYearlyStats = [];
   String recentActivity = "";
   late Timer _timer;
@@ -41,7 +41,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     _tick();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
     fetchDashboardData();
-    fetchAdmins();
+    fetchInterns();
     fetchChartStats();
   }
 
@@ -78,22 +78,22 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
         });
       }
     } catch (e) {
-      print('Error fetching dashboard: $e');
+      debugPrint('Error fetching dashboard: $e');
     }
   }
 
-  Future<void> fetchAdmins() async {
+  Future<void> fetchInterns() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/admins'),
+        Uri.parse('http://127.0.0.1:8080/interns'),
       );
       if (response.statusCode == 200) {
         setState(() {
-          admins = jsonDecode(response.body);
+          interns = jsonDecode(response.body);
         });
       }
     } catch (e) {
-      print('Error fetching admins: $e');
+      debugPrint('Error fetching admins: $e');
     }
   }
 
@@ -144,7 +144,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
         });
       }
     } catch (e) {
-      print('Error fetching chart stats: $e');
+      debugPrint('Error fetching chart stats: $e');
     }
   }
 
@@ -188,7 +188,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
         ),
         RightPanel(
           isDarkMode: widget.isDarkMode,
-          admins: admins,
+          interns: interns,
           currentDate: _currentDate,
           calendarDate: _calendarDate,
           onPreviousMonth: () => setState(() {
