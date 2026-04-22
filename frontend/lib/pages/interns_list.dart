@@ -44,26 +44,37 @@ class _InternsListState extends State<InternsList> {
     }
   }
 
-  Future<void> deleteIntern(String id) async {
+  Future<void> deleteIntern(String idNumber) async {
     try {
-      final response = await http.delete(
-        Uri.parse("http://localhost:8080/interns/$id"),
+      final uri = Uri.parse(
+        "http://localhost:8080/delete-intern?id=$idNumber",
       );
 
+      final response = await http.delete(uri);
+
       if (response.statusCode == 200) {
-        fetchInterns();
+        final data = jsonDecode(response.body);
+
+        // refresh list
+        await fetchInterns();
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Intern deleted successfully"),
+          SnackBar(
+            content: Text(
+              "${data['message']} (${data['id_number']})",
+            ),
           ),
+        );
+      } else {
+        final msg = response.body;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Delete failed: $msg")),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Delete failed: $e"),
-        ),
+        SnackBar(content: Text("Network error: $e")),
       );
     }
   }
@@ -94,7 +105,7 @@ class _InternsListState extends State<InternsList> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              deleteIntern(intern['id'].toString());
+              deleteIntern(intern['id_number'].toString());
             },
             child: const Text(
               "Delete",
@@ -278,8 +289,13 @@ class _InternsListState extends State<InternsList> {
                   onChanged: searchIntern,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: widget.isDarkMode ? Colors.grey : Colors.white,
-                    prefixIcon: const Icon(Icons.search),
+                    fillColor: widget.isDarkMode
+                        ? const Color.fromARGB(255, 68, 67, 67)
+                        : Colors.white,
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                     hintText: "Search Intern...",
                     hintStyle: TextStyle(
                       color: widget.isDarkMode ? Colors.grey : Colors.black54,
@@ -295,14 +311,17 @@ class _InternsListState extends State<InternsList> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
-                  color: widget.isDarkMode ? Colors.black54 : Colors.white,
+                  color: widget.isDarkMode
+                      ? Color.fromARGB(255, 64, 64, 64)
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: sortType,
-                    dropdownColor:
-                        widget.isDarkMode ? Colors.black54 : Colors.white,
+                    dropdownColor: widget.isDarkMode
+                        ? const Color.fromARGB(255, 64, 64, 64)
+                        : Colors.white,
                     items: [
                       DropdownMenuItem(
                         value: "A-Z",
