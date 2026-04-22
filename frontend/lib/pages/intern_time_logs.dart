@@ -46,7 +46,7 @@ class _InternTimeLogsPageState extends State<InternTimeLogsPage> {
   Future<void> fetchTimeLogStats() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/timelogs/stats'),
+        Uri.parse('http://127.0.0.1:8080/intern/timelogs/stats'),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -65,7 +65,7 @@ class _InternTimeLogsPageState extends State<InternTimeLogsPage> {
   Future<void> fetchTimeLogs() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/timelogs'),
+        Uri.parse('http://127.0.0.1:8080/intern/timelogs'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
