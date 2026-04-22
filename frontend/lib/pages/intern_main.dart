@@ -9,10 +9,10 @@ import 'intern_my_profile.dart';
 
 class InternMainPage extends StatefulWidget {
   final String firstName;
-  final String userId; // add this
+  final String userId;
 
   const InternMainPage(
-      {super.key, required this.firstName, required this.userId}); // add userId
+      {super.key, required this.firstName, required this.userId});
 
   @override
   State<InternMainPage> createState() => _InternMainPageState();
@@ -86,7 +86,10 @@ class _InternMainPageState extends State<InternMainPage> {
           userId: widget.userId,
         );
       case 2:
-        return InternTimeLogsPage(firstName: widget.firstName);
+        return InternTimeLogsPage(
+          firstName: widget.firstName,
+          userId: widget.userId,
+        );
       case 3:
         return const Center(
             child:

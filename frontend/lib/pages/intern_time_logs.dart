@@ -11,7 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class InternTimeLogsPage extends StatefulWidget {
   final String firstName;
-  const InternTimeLogsPage({super.key, required this.firstName});
+  final String userId;
+  const InternTimeLogsPage(
+      {super.key, required this.firstName, required this.userId});
 
   @override
   State<InternTimeLogsPage> createState() => _InternTimeLogsPageState();
@@ -46,7 +48,8 @@ class _InternTimeLogsPageState extends State<InternTimeLogsPage> {
   Future<void> fetchTimeLogStats() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/intern/timelogs/stats'),
+        Uri.parse(
+            'http://127.0.0.1:8080/intern/timelogs?user_id=${widget.userId}'),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -65,7 +68,8 @@ class _InternTimeLogsPageState extends State<InternTimeLogsPage> {
   Future<void> fetchTimeLogs() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8080/intern/timelogs'),
+        Uri.parse(
+            'http://127.0.0.1:8080/intern/timelogs/stats?user_id=${widget.userId}'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
