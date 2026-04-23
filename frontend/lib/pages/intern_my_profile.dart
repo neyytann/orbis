@@ -122,10 +122,13 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     }
   }
 
+  bool _removePhotoRequested = false;
+
   void _removeProfileImage() {
     setState(() {
       _pickedImageFile = null;
       _profileImageUrl = null;
+      _removePhotoRequested = true;
     });
   }
 
@@ -155,6 +158,21 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           'phone_number': _phoneController.text,
         }),
       );
+
+      // 2. Remove photo if user clicked Remove Image
+      if (_profileImageUrl == null && _pickedImageFile == null) {
+        await http.delete(
+          Uri.parse('$_base/remove-photo?id=${widget.userId}'),
+        );
+      }
+
+      // 2. Remove photo from server if requested
+      if (_removePhotoRequested) {
+        await http.delete(
+          Uri.parse('$_base/remove-photo?id=${widget.userId}'),
+        );
+        _removePhotoRequested = false;
+      }
 
       if (res.statusCode != 200) {
         if (mounted) {
@@ -240,6 +258,7 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
 
   void _cancelEditing() {
     setState(() {
+      _removePhotoRequested = false;
       _isEditing = false;
       _firstNameController.text = _snapFirstName;
       _lastNameController.text = _snapLastName;
@@ -253,7 +272,10 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     });
   }
 
+  bool _snapRemovePhotoRequested = false;
+
   void _enterEditing() {
+    _snapRemovePhotoRequested = _removePhotoRequested;
     _snapFirstName = _firstNameController.text;
     _snapLastName = _lastNameController.text;
     _snapProgram = _programController.text;
