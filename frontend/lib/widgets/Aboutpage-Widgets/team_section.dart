@@ -20,7 +20,7 @@ class TeamSection extends StatelessWidget {
               ),
             ),
             Text(
-              'The people behind Internshit.',
+              'The people behind Orbis.',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15,

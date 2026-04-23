@@ -13,7 +13,7 @@ class Footer extends StatelessWidget {
             Icon(Icons.copyright, color: Colors.grey, size: 15),
             SizedBox(width: 2),
             Text(
-              '${DateTime.now().year} Internshit. All Rights Reserved.',
+              '${DateTime.now().year} Orbis. All Rights Reserved.',
               style: TextStyle(fontSize: 10, color: Colors.grey),
             ),
             Spacer(),

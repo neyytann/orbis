@@ -3,6 +3,7 @@ import 'package:interfaces/pages/about_page.dart';
 import 'package:interfaces/pages/register_page.dart';
 
 class HeroSection extends StatelessWidget {
+  const HeroSection({super.key});
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -21,23 +22,28 @@ class HeroSection extends StatelessWidget {
               // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Internshits',
+                  'Orbis - Intern Profile\nManagement System',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
                     fontWeight: FontWeight(800),
                   ),
                 ),
-                Text(
-                  'InternShitss InternShitsdsad InternShits\nInternShitssdsad InternShitsds InternShits\nInternShits InternShits InternShitss',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 15),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    'Stay on top of your internship journey by easily tracking your daily\nhours, monitoring your remaining OJT hours, and keeping your\nprofile up to date. All in one simple and organized platform.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
                 ),
                 SizedBox(height: 10),
                 SizedBox(
-                  width: 200,
+                  width: 300,
                   height: 40,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         decoration: BoxDecoration(
@@ -77,7 +83,7 @@ class HeroSection extends StatelessWidget {
                                   'Get Started',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w100,
                                   ),
                                 ),
@@ -105,7 +111,7 @@ class HeroSection extends StatelessWidget {
                               'Learn More',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 12,
+                                fontSize: 15,
                               ),
                             ),
                             Icon(Icons.arrow_forward, color: Colors.grey),

@@ -30,7 +30,7 @@ class PreFooter extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                           Text(
-                            'Internshit',
+                            'Orbis',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight(500),
@@ -104,21 +104,21 @@ class PreFooter extends StatelessWidget {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Internshit',
+                            'Orbis',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            'Internshit',
+                            'Orbis',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            'Internshit',
+                            'Orbis',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white,

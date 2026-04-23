@@ -103,7 +103,7 @@ class _ContactsContactState extends State<ContactsContact> {
                     Icon(Icons.mark_email_read, color: Colors.white, size: 20),
                     SizedBox(width: 5),
                     Text(
-                      'Email Us support@internshit.com',
+                      'Email Us support@orbis.com',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -123,7 +123,6 @@ class _ContactsContactState extends State<ContactsContact> {
               ],
             ),
           ),
-
           Expanded(
             child: Container(
               width: 400,
@@ -168,7 +167,6 @@ class _ContactsContactState extends State<ContactsContact> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-
                     Container(
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
@@ -198,7 +196,6 @@ class _ContactsContactState extends State<ContactsContact> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-
                     Container(
                       height: 120,
                       decoration: const BoxDecoration(
@@ -230,7 +227,6 @@ class _ContactsContactState extends State<ContactsContact> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-
                     Container(
                       height: 50,
                       decoration: const BoxDecoration(
