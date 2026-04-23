@@ -55,7 +55,7 @@ class InternStatsCards extends StatelessWidget {
         return const Color(0xFF4CAF50);
       case 'late':
         return const Color(0xFFFFA726);
-      case 'half day':
+      case 'half-day':
         return const Color(0xFFAB47BC);
       case 'absent':
         return const Color(0xFF42A5F5);

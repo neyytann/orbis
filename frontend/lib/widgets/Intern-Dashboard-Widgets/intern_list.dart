@@ -15,7 +15,7 @@ class InternList extends StatelessWidget {
         return const Color(0xFFFFA726);
       case 'absent':
         return const Color(0xFFEF5350);
-      case 'half day':
+      case 'half-day':
         return const Color(0xFF42A5F5);
       default:
         return Colors.grey;

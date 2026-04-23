@@ -12,13 +12,13 @@ class InternTimeLogTable extends StatelessWidget {
 
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'on time':
+      case 'on-time':
         return const Color(0xFF4CAF50);
       case 'late':
         return const Color(0xFFFFA726);
       case 'absent':
         return const Color(0xFFEF5350);
-      case 'half day':
+      case 'half-day':
         return const Color(0xFF42A5F5);
       case 'weekend':
         return const Color(0xFFAB47BC);
@@ -29,8 +29,8 @@ class InternTimeLogTable extends StatelessWidget {
 
   String _capitalize(String text) {
     if (text.isEmpty) return text;
-    if (text == 'on time') return 'On Time';
-    if (text == 'half day') return 'Half Day';
+    if (text == 'on-time') return 'On Time';
+    if (text == 'half-day') return 'Half Day';
     return text[0].toUpperCase() + text.substring(1);
   }
 
