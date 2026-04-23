@@ -477,13 +477,20 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'Welcome to Internshit',
+                'Welcome to Orbis',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
                     fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 2),
+              const Text(
+                'Manage your interns, track hours, and monitor attendance with ease.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255), fontSize: 15),
+              ),
+              const SizedBox(height: 15),
               Container(
                 width: 400,
                 decoration: const BoxDecoration(
@@ -533,8 +540,8 @@ class _LoginState extends State<Login> {
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white)),
-                    prefixIcon: const Icon(Icons.password_outlined,
-                        color: Colors.white),
+                    prefixIcon:
+                        const Icon(Icons.lock_outline, color: Colors.white),
                     label: const Text('Password',
                         style: TextStyle(color: Colors.white)),
                     suffixIcon: IconButton(
@@ -567,7 +574,7 @@ class _LoginState extends State<Login> {
               TextButton(
                 onPressed: _showForgotPasswordDialog,
                 child: const Text(
-                  "Forgot Password",
+                  "Forgot Password?",
                   style: TextStyle(
                     color: Colors.white70,
                   ),
