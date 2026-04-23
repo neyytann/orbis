@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class InternProfileImageSection extends StatelessWidget {
   final bool isDarkMode;
-  final File? profileImage;
+  final XFile? pickedImageFile; // web-safe: XFile instead of dart:io File
   final String? profileImageUrl;
   final String idNumber;
   final VoidCallback onChangeImage;
@@ -12,7 +12,7 @@ class InternProfileImageSection extends StatelessWidget {
   const InternProfileImageSection({
     super.key,
     required this.isDarkMode,
-    required this.profileImage,
+    required this.pickedImageFile,
     required this.profileImageUrl,
     required this.idNumber,
     required this.onChangeImage,
@@ -27,29 +27,9 @@ class InternProfileImageSection extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Profile Image
-            CircleAvatar(
-              key: ValueKey(profileImageUrl ?? ''),
-              radius: 70,
-              backgroundColor: isDarkMode
-                  ? const Color(0xFF3A3A3A)
-                  : const Color(0xFFDDDDDD),
-              backgroundImage: profileImage != null
-                ? FileImage(profileImage!) as ImageProvider
-                : (profileImageUrl != null && profileImageUrl!.isNotEmpty
-                    ? NetworkImage(profileImageUrl!)
-                    : null),
-              child: (profileImage == null &&
-                      (profileImageUrl == null || profileImageUrl!.isEmpty))
-                  ? Icon(
-                      Icons.person,
-                      size: 60,
-                      color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
-                    )
-                  : null,
-            ),
+            // Profile Image — web-safe preview
+            _buildAvatar(),
             const SizedBox(width: 32),
-            // Buttons + hint
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -103,7 +83,6 @@ class InternProfileImageSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        // ID Number
         Text(
           'ID NO: $idNumber',
           style: TextStyle(
@@ -118,5 +97,51 @@ class InternProfileImageSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildAvatar() {
+    // If user just picked a new image, show it as a preview using FutureBuilder
+    if (pickedImageFile != null) {
+      return FutureBuilder<ImageProvider>(
+        future: _loadPickedImage(),
+        builder: (context, snapshot) {
+          return CircleAvatar(
+            key: ValueKey(pickedImageFile!.name),
+            radius: 70,
+            backgroundColor: isDarkMode
+                ? const Color(0xFF3A3A3A)
+                : const Color(0xFFDDDDDD),
+            backgroundImage: snapshot.data,
+            child: snapshot.data == null
+                ? const CircularProgressIndicator()
+                : null,
+          );
+        },
+      );
+    }
+
+    // Otherwise show the server URL or placeholder
+    return CircleAvatar(
+      key: ValueKey(profileImageUrl ?? ''),
+      radius: 70,
+      backgroundColor:
+          isDarkMode ? const Color(0xFF3A3A3A) : const Color(0xFFDDDDDD),
+      backgroundImage: profileImageUrl != null && profileImageUrl!.isNotEmpty
+          ? NetworkImage(profileImageUrl!)
+          : null,
+      child: profileImageUrl == null || profileImageUrl!.isEmpty
+          ? Icon(
+              Icons.person,
+              size: 60,
+              color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+            )
+          : null,
+    );
+  }
+
+  // Web-safe: read XFile as bytes and convert to MemoryImage
+  Future<ImageProvider> _loadPickedImage() async {
+    final bytes = await pickedImageFile!.readAsBytes();
+    return MemoryImage(bytes);
   }
 }

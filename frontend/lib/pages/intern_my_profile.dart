@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,23 +34,29 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
   final _phoneController = TextEditingController();
 
   String idNumber = '';
-  File? _profileImage;
-  File? _resumeFile;
+
+  // Web: use XFile instead of dart:io File
+  XFile? _pickedImageFile;
   String? _profileImageUrl;
+
+  // Web: use PlatformFile with bytes instead of dart:io File
+  PlatformFile? _pickedResumeFile;
   String? _resumeUrl;
+
   bool _isLoading = false;
   bool _isSaving = false;
-
   bool _isEditing = false;
 
+  // Snapshots for cancel
   String _snapFirstName = '';
   String _snapLastName = '';
   String _snapProgram = '';
   String _snapSchool = '';
   String _snapPhone = '';
-  File? _snapProfileImage;
+  XFile? _snapPickedImageFile;
   String? _snapProfileImageUrl;
-  File? _snapResumeFile;
+  PlatformFile? _snapPickedResumeFile;
+  String? _snapResumeUrl;
 
   @override
   void initState() {
@@ -86,20 +91,16 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           _emailController.text = data['email'] ?? '';
           _phoneController.text = data['phone_number'] ?? '';
           idNumber = data['id_number'] ?? '';
+
           final rawPhoto = data['photo'] ?? '';
-          if (rawPhoto.isNotEmpty) {
-              final fullUrl = rawPhoto.startsWith('http') ? rawPhoto : '$_base$rawPhoto';
-              NetworkImage(fullUrl).evict();
-              imageCache.clear();
-              imageCache.clearLiveImages();
-              _profileImageUrl = fullUrl;
-          } else {
-              _profileImageUrl = null;
-          }
+          _profileImageUrl = rawPhoto.isNotEmpty
+              ? (rawPhoto.startsWith('http') ? rawPhoto : '$_base$rawPhoto')
+              : null;
+
           final rawResume = data['resume'] ?? '';
-          _resumeUrl = rawResume.isNotEmpty && !rawResume.startsWith('http')
-              ? '$_base$rawResume'
-    : rawResume.isNotEmpty ? rawResume : null;
+          _resumeUrl = rawResume.isNotEmpty
+              ? (rawResume.startsWith('http') ? rawResume : '$_base$rawResume')
+              : null;
         });
       }
     } catch (e) {
@@ -117,13 +118,13 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
       imageQuality: 85,
     );
     if (picked != null) {
-      setState(() => _profileImage = File(picked.path));
+      setState(() => _pickedImageFile = picked);
     }
   }
 
   void _removeProfileImage() {
     setState(() {
-      _profileImage = null;
+      _pickedImageFile = null;
       _profileImageUrl = null;
     });
   }
@@ -132,16 +133,17 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx'],
+      withData: true, // required for web — loads bytes into memory
     );
-    if (result != null && result.files.single.path != null) {
-      setState(() => _resumeFile = File(result.files.single.path!));
+    if (result != null && result.files.isNotEmpty) {
+      setState(() => _pickedResumeFile = result.files.first);
     }
   }
 
   Future<void> _saveChanges() async {
     setState(() => _isSaving = true);
     try {
-      // 1. Update text fields — JSON body to PUT /update-intern?id=
+      // 1. Update text fields
       final res = await http.put(
         Uri.parse('$_base/update-intern?id=${widget.userId}'),
         headers: {'Content-Type': 'application/json'},
@@ -163,46 +165,46 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
         return;
       }
 
-      // 2. Upload profile photo if changed
-      if (_profileImage != null) {
+      // 2. Upload photo using bytes (web-safe)
+      if (_pickedImageFile != null) {
+        final bytes = await _pickedImageFile!.readAsBytes();
         final photoReq = http.MultipartRequest(
           'POST',
           Uri.parse('$_base/upload-photo?id=${widget.userId}'),
         );
-        // FIX 6: field name must be "photo" — matches Go handler's r.FormFile("photo")
-        photoReq.files.add(await http.MultipartFile.fromPath(
+        photoReq.files.add(http.MultipartFile.fromBytes(
           'photo',
-          _profileImage!.path,
+          bytes,
+          filename: _pickedImageFile!.name,
         ));
         final photoRes = await photoReq.send();
         if (photoRes.statusCode == 200) {
-          // Parse the returned URL so the avatar updates immediately
           final body = await photoRes.stream.bytesToString();
           final json = jsonDecode(body) as Map<String, dynamic>;
           final newUrl = json['profile_image_url'] as String?;
           if (newUrl != null && mounted) {
-              final fullUrl = '$_base$newUrl';
-              // Clear Flutter's image cache so the new photo loads fresh
-              NetworkImage(fullUrl).evict();
-              imageCache.clear();
-              imageCache.clearLiveImages();
-              setState(() {
-                  _profileImageUrl = fullUrl;
-                  _profileImage = null;
-              });
+            final fullUrl = '$_base$newUrl';
+            NetworkImage(fullUrl).evict();
+            imageCache.clear();
+            imageCache.clearLiveImages();
+            setState(() {
+              _profileImageUrl = fullUrl;
+              _pickedImageFile = null;
+            });
           }
         }
       }
 
-      // 3. Upload resume if changed
-      if (_resumeFile != null) {
+      // 3. Upload resume using bytes (web-safe)
+      if (_pickedResumeFile != null && _pickedResumeFile!.bytes != null) {
         final resumeReq = http.MultipartRequest(
           'POST',
           Uri.parse('$_base/upload-resume?id=${widget.userId}'),
         );
-        resumeReq.files.add(await http.MultipartFile.fromPath(
+        resumeReq.files.add(http.MultipartFile.fromBytes(
           'resume',
-          _resumeFile!.path,
+          _pickedResumeFile!.bytes!,
+          filename: _pickedResumeFile!.name,
         ));
         final resumeRes = await resumeReq.send();
         if (resumeRes.statusCode == 200) {
@@ -212,7 +214,7 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           if (newUrl != null && mounted) {
             setState(() {
               _resumeUrl = '$_base$newUrl';
-              _resumeFile = null;
+              _pickedResumeFile = null;
             });
           }
         }
@@ -244,9 +246,10 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
       _programController.text = _snapProgram;
       _schoolController.text = _snapSchool;
       _phoneController.text = _snapPhone;
-      _profileImage = _snapProfileImage;
+      _pickedImageFile = _snapPickedImageFile;
       _profileImageUrl = _snapProfileImageUrl;
-      _resumeFile = _snapResumeFile;
+      _pickedResumeFile = _snapPickedResumeFile;
+      _resumeUrl = _snapResumeUrl;
     });
   }
 
@@ -256,9 +259,10 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
     _snapProgram = _programController.text;
     _snapSchool = _schoolController.text;
     _snapPhone = _phoneController.text;
-    _snapProfileImage = _profileImage;
+    _snapPickedImageFile = _pickedImageFile;
     _snapProfileImageUrl = _profileImageUrl;
-    _snapResumeFile = _resumeFile;
+    _snapPickedResumeFile = _pickedResumeFile;
+    _snapResumeUrl = _resumeUrl;
     setState(() => _isEditing = true);
   }
 
@@ -330,7 +334,7 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
                 // ── Profile image ─────────────────────────────────────────
                 InternProfileImageSection(
                   isDarkMode: widget.isDarkMode,
-                  profileImage: _profileImage,
+                  pickedImageFile: _pickedImageFile,
                   profileImageUrl: _profileImageUrl,
                   idNumber: idNumber,
                   onChangeImage: _isEditing ? _pickProfileImage : () {},
@@ -408,7 +412,7 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
 
           InternProfileResumePreview(
             isDarkMode: widget.isDarkMode,
-            resumeFile: _resumeFile,
+            resumeFile: null,
             resumeUrl: _resumeUrl,
           ),
         ],
