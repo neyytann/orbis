@@ -191,9 +191,21 @@ class _InternsListState extends State<InternsList> {
               ],
             ),
           ),
-          const CircleAvatar(
+          CircleAvatar(
             radius: 35,
-            child: Icon(Icons.person, size: 35),
+            backgroundColor: Colors.grey[300],
+            backgroundImage: intern['photo'] != null &&
+                    intern['photo'].toString().isNotEmpty
+                ? NetworkImage(
+                    intern['photo'].toString().startsWith('http')
+                        ? intern['photo']
+                        : "http://localhost:8080/${intern['photo']}",
+                  )
+                : null,
+            child: (intern['photo'] == null ||
+                    intern['photo'].toString().isEmpty)
+                ? const Icon(Icons.person, size: 35)
+                : null,
           ),
           const SizedBox(height: 15),
           Text(
