@@ -86,8 +86,14 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           _emailController.text = data['email'] ?? '';
           _phoneController.text = data['phone_number'] ?? '';
           idNumber = data['id_number'] ?? '';
-          _profileImageUrl = data['profile_image_url'];
-          _resumeUrl = data['resume_url'];
+          final rawPhoto = data['profile_image_url'] ?? '';
+          _profileImageUrl = rawPhoto.isNotEmpty && !rawPhoto.startsWith('http')
+              ? '$_base$rawPhoto'
+              : rawPhoto.isNotEmpty ? rawPhoto : null;
+          final rawResume = data['resume_url'] ?? '';
+          _resumeUrl = rawResume.isNotEmpty && !rawResume.startsWith('http')
+              ? '$_base$rawResume'
+    : rawResume.isNotEmpty ? rawResume : null;
         });
       }
     } catch (e) {
@@ -157,11 +163,24 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           'POST',
           Uri.parse('$_base/upload-photo?id=${widget.userId}'),
         );
+        // FIX 6: field name must be "photo" — matches Go handler's r.FormFile("photo")
         photoReq.files.add(await http.MultipartFile.fromPath(
           'photo',
           _profileImage!.path,
         ));
-        await photoReq.send();
+        final photoRes = await photoReq.send();
+        if (photoRes.statusCode == 200) {
+          // Parse the returned URL so the avatar updates immediately
+          final body = await photoRes.stream.bytesToString();
+          final json = jsonDecode(body) as Map<String, dynamic>;
+          final newUrl = json['profile_image_url'] as String?;
+          if (newUrl != null && mounted) {
+            setState(() {
+              _profileImageUrl = '$_base$newUrl';
+              _profileImage = null; // clear local file — use server URL from now on
+            });
+          }
+        }
       }
 
       // 3. Upload resume if changed
@@ -174,15 +193,24 @@ class _InternMyProfilePageState extends State<InternMyProfilePage> {
           'resume',
           _resumeFile!.path,
         ));
-        await resumeReq.send();
+        final resumeRes = await resumeReq.send();
+        if (resumeRes.statusCode == 200) {
+          final body = await resumeRes.stream.bytesToString();
+          final json = jsonDecode(body) as Map<String, dynamic>;
+          final newUrl = json['resume_url'] as String?;
+          if (newUrl != null && mounted) {
+            setState(() {
+              _resumeUrl = '$_base$newUrl';
+              _resumeFile = null;
+            });
+          }
+        }
       }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully!')),
         );
-        // Just flip edit mode off — data is already correct in the controllers,
-        // no re-fetch needed so the screen never stutters.
         setState(() => _isEditing = false);
       }
     } catch (e) {
