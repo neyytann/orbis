@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:interfaces/pages/intern_profile_page.dart';
 
 class InternsList extends StatefulWidget {
   final bool isDarkMode;
@@ -35,8 +36,7 @@ class _InternsListState extends State<InternsList> {
 
   Future<void> fetchInterns() async {
     try {
-      final response =
-          await http.get(Uri.parse("$_baseUrl/interns"));
+      final response = await http.get(Uri.parse("$_baseUrl/interns"));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -154,6 +154,7 @@ class _InternsListState extends State<InternsList> {
     final photo = _photoProvider(intern);
 
     return Container(
+      width: 200,
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: widget.isDarkMode ? Colors.black54 : Colors.white,
@@ -190,9 +191,8 @@ class _InternsListState extends State<InternsList> {
                       Text(
                         "Delete",
                         style: TextStyle(
-                          color: widget.isDarkMode
-                              ? Colors.white
-                              : Colors.black54,
+                          color:
+                              widget.isDarkMode ? Colors.white : Colors.black54,
                         ),
                       ),
                     ],
@@ -202,21 +202,22 @@ class _InternsListState extends State<InternsList> {
             ),
           ),
           CircleAvatar(
-            radius: 35,
+            radius: 40,
             backgroundColor: Colors.grey[300],
             backgroundImage: photo,
-            child: photo == null
-                ? const Icon(Icons.person, size: 35)
-                : null,
+            child: photo == null ? const Icon(Icons.person, size: 40) : null,
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           Text(
             "${intern['first_name']} ${intern['last_name']}",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: widget.isDarkMode ? Colors.white : Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
+          ),
+          SizedBox(
+            height: 5,
           ),
           Container(
             height: 2,
@@ -224,42 +225,103 @@ class _InternsListState extends State<InternsList> {
               color: widget.isDarkMode ? Colors.grey : Colors.black,
             ),
           ),
+          SizedBox(
+            height: 5,
+          ),
           Text(
             intern['id_number'] ?? '',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
           ),
-          const SizedBox(height: 8),
-          Text(
-            intern['program'] ?? '',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          Row(
+            children: [
+              Icon(
+                Icons.school_outlined,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+                size: 15,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                intern['program'] ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
+              ),
+            ],
           ),
-          const SizedBox(height: 5),
-          Text(
-            intern['school'] ?? '',
-            style: TextStyle(
-              fontSize: 12,
-              color: widget.isDarkMode ? Colors.white : Colors.black54,
-            ),
+          SizedBox(
+            height: 3,
           ),
-          const SizedBox(height: 5),
-          Text(
-            intern['phone_number'] ?? '',
-            style: TextStyle(
-              fontSize: 12,
-              color: widget.isDarkMode ? Colors.white : Colors.black54,
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.apartment_outlined,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+                size: 15,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                intern['school'] ?? '',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: widget.isDarkMode ? Colors.grey : Colors.black54,
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
+          SizedBox(
+            height: 3,
+          ),
+          Row(
+            children: [
+              Icon(
+                Icons.phone_callback_outlined,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+                size: 15,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                intern['phone_number'] ?? '',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: widget.isDarkMode ? Colors.grey : Colors.black54,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               style: const ButtonStyle(
-                overlayColor: WidgetStatePropertyAll(Colors.blue),
+                  backgroundColor: WidgetStatePropertyAll(
+                    Colors.blue,
+                  ),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadiusGeometry.all(Radius.circular(5))))),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InternProfilePage(
+                      intern: intern,
+                      isDarkMode: widget.isDarkMode,
+                      firstName: 'Admin' ?? '',
+                      onToggleDarkMode: () {},
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                "VIEW PROFILE",
+                style: TextStyle(color: Colors.white),
               ),
-              onPressed: () {},
-              child: const Text("VIEW PROFILE"),
             ),
           ),
         ],
@@ -271,9 +333,8 @@ class _InternsListState extends State<InternsList> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(25),
-      color: widget.isDarkMode
-          ? const Color(0xFF1E1E1E)
-          : const Color(0xFFF7F7F7),
+      color:
+          widget.isDarkMode ? const Color(0xFF1E1E1E) : const Color(0xFFF7F7F7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -307,22 +368,23 @@ class _InternsListState extends State<InternsList> {
                     fillColor: widget.isDarkMode
                         ? const Color.fromARGB(255, 68, 67, 67)
                         : Colors.white,
-                    prefixIcon: const Icon(
+                    prefixIcon: Icon(
                       Icons.search,
-                      color: Colors.white,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
                     ),
                     hintText: "Search Intern...",
                     hintStyle: TextStyle(
                       color: widget.isDarkMode ? Colors.grey : Colors.black54,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
               const Spacer(),
+              const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
@@ -399,7 +461,7 @@ class _InternsListState extends State<InternsList> {
                     itemCount: filteredInterns.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                      crossAxisCount: 5,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                       childAspectRatio: 0.75,

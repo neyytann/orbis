@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interfaces/pages/contact_page.dart';
+import 'package:interfaces/pages/dashboard.dart';
 import 'package:interfaces/pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'pages/about_page.dart';
@@ -24,6 +25,10 @@ class InternsProfile extends StatelessWidget {
         '/contacts': (context) => ContactPage(),
         'register': (context) => RegisterPage(),
         '/login': (context) => LoginPage(),
+        '/dashboard': (context) => const DashboardOverviewPage(
+              firstName: 'first_name',
+              isDarkMode: true,
+            ),
       },
     );
   }
