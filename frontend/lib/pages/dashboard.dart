@@ -28,7 +28,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
   int totalSchools = 0;
   List<dynamic> interns = [];
   List<Map<String, dynamic>> chartYearlyStats = [];
-  String recentActivity = "";
+  List<Map<String, dynamic>> recentActivities = [];
   late Timer _timer;
   String _currentTimeString = "";
   DateTime _currentDate = DateTime.now();
@@ -42,6 +42,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     fetchDashboardData();
     fetchInterns();
     fetchChartStats();
+    fetchRecentActivity();
   }
 
   @override
@@ -148,6 +149,23 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     }
   }
 
+  Future<void> fetchRecentActivity() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8080/recent-activity'),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          recentActivities =
+              data.map((e) => Map<String, dynamic>.from(e)).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching recent activity: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -178,7 +196,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
                 const SizedBox(height: 20),
                 RecentActivity(
                   isDarkMode: widget.isDarkMode,
-                  recentActivity: recentActivity,
+                  activities: recentActivities,
                 ),
               ],
             ),
