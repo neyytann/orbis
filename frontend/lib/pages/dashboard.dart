@@ -40,6 +40,7 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
     _tick();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
     fetchDashboardData();
+    fetchNewInternsToday();
     fetchInterns();
     fetchChartStats();
     fetchRecentActivity();
@@ -73,12 +74,30 @@ class _DashboardOverviewPageState extends State<DashboardOverviewPage> {
         final data = jsonDecode(response.body);
         setState(() {
           totalInterns = data['total_interns'];
-          newInterns = data['new_interns'];
           totalSchools = data['total_schools'];
         });
       }
     } catch (e) {
       debugPrint('Error fetching dashboard: $e');
+    }
+  }
+
+  Future<void> fetchNewInternsToday() async {
+    try {
+      final today = DateTime.now();
+      final dateStr =
+          '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8080/new-interns-today?date=$dateStr'),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          newInterns = data['count'];
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching new interns today: $e');
     }
   }
 
