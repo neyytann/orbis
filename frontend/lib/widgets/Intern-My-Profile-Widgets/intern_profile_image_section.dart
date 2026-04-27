@@ -27,8 +27,7 @@ class InternProfileImageSection extends StatelessWidget {
         isDarkMode ? const Color(0xFF9E9E9E) : const Color(0xFF757575);
 
     // Support text color is always the same regardless of editing state
-    final supportTextColor =
-        isDarkMode ? Colors.grey[500]! : Colors.grey[600]!;
+    final supportTextColor = isDarkMode ? Colors.grey[500]! : Colors.grey[600]!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +63,13 @@ class InternProfileImageSection extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 12),
                       ),
-                      child: const Text('Change Image'),
+                      child: Text(
+                        (pickedImageFile != null ||
+                                (profileImageUrl != null &&
+                                    profileImageUrl!.isNotEmpty))
+                            ? 'Change Image'
+                            : 'Upload Image',
+                      ),
                     ),
                     const SizedBox(width: 12),
                     ElevatedButton(
@@ -131,9 +136,8 @@ class InternProfileImageSection extends StatelessWidget {
           return CircleAvatar(
             key: ValueKey(pickedImageFile!.name),
             radius: 70,
-            backgroundColor: isDarkMode
-                ? const Color(0xFF3A3A3A)
-                : const Color(0xFFDDDDDD),
+            backgroundColor:
+                isDarkMode ? const Color(0xFF3A3A3A) : const Color(0xFFDDDDDD),
             backgroundImage: snapshot.data,
             child: snapshot.data == null
                 ? const CircularProgressIndicator()
