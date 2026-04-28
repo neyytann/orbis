@@ -32,17 +32,18 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
   List<String> internNames = [];
   String? selectedIntern;
   String searchQuery = '';
+  bool _isDefaultView = true;
 
-  String selectedMonth = 'April 2026';
   String selectedStatus = 'All';
   String selectedWeek = 'All Weeks';
 
   int currentPage = 1;
   int entriesPerPage = 8;
 
-  bool _isDefaultView = true;
-  bool _isSpecificDate = false;
-  DateTime? selectedDate;
+  final _now = DateTime.now();
+  late String selectedMonth;
+  bool _isSpecificDate = true;
+  late DateTime? selectedDate;
 
   List<Map<String, dynamic>> allLogs = [];
   List<Map<String, dynamic>> filteredLogs = [];
@@ -50,6 +51,10 @@ class _TimeLogsPageState extends State<TimeLogsPage> {
   @override
   void initState() {
     super.initState();
+    // Initialize date fields properly
+    selectedDate = _now;
+    selectedMonth = 'April ${_now.day}, ${_now.year}'; // or use dynamic month
+
     fetchOverviewStats();
     fetchInterns();
     fetchTodayLogs();

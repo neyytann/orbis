@@ -72,9 +72,9 @@ class TimeLogsFilters extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              _toggleButton('Date', isSpecificDate, () => onToggleMode(true)),
               _toggleButton(
                   'Month', !isSpecificDate, () => onToggleMode(false)),
-              _toggleButton('Date', isSpecificDate, () => onToggleMode(true)),
             ],
           ),
         ),
