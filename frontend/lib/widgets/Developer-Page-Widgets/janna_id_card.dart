@@ -277,7 +277,7 @@ class _JannaCardFace extends StatelessWidget {
                         const CardBarcode(),
                         const SizedBox(height: 4),
                         Text(
-                          'DEV-2026-007 · JANNA PUJEDA',
+                          'DEV-2026-179 · JANNA PUJEDA',
                           style: TextStyle(
                             fontSize: 7,
                             fontFamily: 'monospace',

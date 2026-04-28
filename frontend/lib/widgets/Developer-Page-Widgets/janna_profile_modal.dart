@@ -113,13 +113,13 @@ void showProfileModal(BuildContext context) {
                     _modalBody(
                       'Full-stack developer specializing in Flutter and web technologies. '
                       'Loves crafting pixel-perfect interfaces and smooth animations. '
-                      'Coffee-fueled, design-driven, and detail-obsessed.',
+                      'Matcha-fueled, design-driven, and detail-obsessed.',
                     ),
 
                     // Details grid
                     _modalSection('Details'),
                     _modalGrid(items: const {
-                      'Email': 'j.pujeda@devteam.io',
+                      'Email': 'pujedajannatricia@gmail.com',
                       'Member since': 'Jan 2026',
                       'ID': 'DEV-2026-179',
                       'Department': 'Development',
