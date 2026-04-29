@@ -35,18 +35,28 @@ void showProfileModal(BuildContext context) {
                     height: 70,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFF1e3a5f),
                       border: Border.all(
                           color: const Color(0xFF3b82f6).withOpacity(0.4),
                           width: 2),
                     ),
-                    child: const Center(
-                      child: Text(
-                        'JA',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF93c5fd),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/janna.png',
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: const Color(0xFF1e3a5f),
+                          child: const Center(
+                            child: Text(
+                              'JA',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF93c5fd),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
