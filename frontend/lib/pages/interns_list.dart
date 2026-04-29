@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 
 class InternsList extends StatefulWidget {
@@ -21,6 +23,7 @@ class _InternsListState extends State<InternsList> {
   List filteredInterns = [];
   String sortType = "A-Z";
   final searchController = TextEditingController();
+  Timer? _refreshTimer;
 
   static const String _baseUrl = "http://localhost:8080";
 
@@ -28,6 +31,22 @@ class _InternsListState extends State<InternsList> {
   void initState() {
     super.initState();
     fetchInterns();
+    _startAutoRefresh();
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      if (!mounted) return;
+      try {
+        await fetchInterns();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Auto-refresh error: $e')),
+          );
+        }
+      }
+    });
   }
 
   ImageProvider? _photoProvider(dynamic intern) {
@@ -43,16 +62,23 @@ class _InternsListState extends State<InternsList> {
       final response = await http.get(Uri.parse("$_baseUrl/interns"));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        setState(() {
-          interns = data;
-          filteredInterns = data;
-        });
+        if (mounted) {
+          setState(() {
+            interns = data;
+            filteredInterns = data;
+          });
+        }
       }
     } catch (e) {
-      setState(() {
-        interns = [];
-        filteredInterns = [];
-      });
+      if (mounted) {
+        setState(() {
+          interns = [];
+          filteredInterns = [];
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Fetch interns error: $e')),
+        );
+      }
     }
   }
 
@@ -302,6 +328,13 @@ class _InternsListState extends State<InternsList> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
