@@ -38,23 +38,8 @@ class _InternsListState extends State<InternsList> {
   void initState() {
     super.initState();
     fetchInterns();
-    _startAutoRefresh();
   }
 
-  void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-      if (!mounted) return;
-      try {
-        await fetchInterns();
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Auto-refresh error: $e')),
-          );
-        }
-      }
-    });
-  }
 
   ImageProvider? _photoProvider(dynamic intern) {
     final photo = intern['photo']?.toString() ?? '';
