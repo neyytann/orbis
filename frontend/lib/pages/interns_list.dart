@@ -42,7 +42,7 @@ class _InternsListState extends State<InternsList> {
   }
 
   void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
       if (!mounted) return;
       try {
         await fetchInterns();
