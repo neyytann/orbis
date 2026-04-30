@@ -14,7 +14,6 @@ class InternTimeLogLegend extends StatelessWidget {
       {'label': 'Late', 'color': const Color(0xFFFFA726)},
       {'label': 'Absent', 'color': const Color(0xFFEF5350)},
       {'label': 'Half Day', 'color': const Color(0xFF42A5F5)},
-      {'label': 'Weekend/Holiday', 'color': const Color(0xFFAB47BC)},
     ];
 
     return Row(

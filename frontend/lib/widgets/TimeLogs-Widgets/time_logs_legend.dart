@@ -11,8 +11,7 @@ class TimeLogsLegend extends StatelessWidget {
       {'label': 'On Time', 'color': const Color(0xFF4CAF50)},
       {'label': 'Late', 'color': const Color(0xFFFFA726)},
       {'label': 'Absent', 'color': const Color(0xFFEF5350)},
-      {'label': 'Half Day', 'color': const Color(0xFF42A5F5)},
-      {'label': 'Weekend/Holiday', 'color': const Color(0xFFAB47BC)},
+      {'label': 'Half Day', 'color': const Color(0xFF42A5F5)}
     ];
 
     return Row(

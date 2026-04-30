@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
 
 class InternTimeLogTable extends StatelessWidget {
   final bool isDarkMode;
@@ -12,54 +11,54 @@ class InternTimeLogTable extends StatelessWidget {
   });
 
   Color _statusColor(String status) {
-  final normalized = status.toLowerCase().replaceAll(' ', '-');
+    final normalized = status.toLowerCase().replaceAll(' ', '-');
 
-  switch (normalized) {
-    case 'on-time':
-      return const Color(0xFF4CAF50);
-    case 'late':
-      return const Color(0xFFFFA726);
-    case 'absent':
-      return const Color(0xFFEF5350);
-    case 'half-day':
-      return const Color(0xFF42A5F5);
-    case 'weekend':
-      return const Color(0xFFAB47BC);
-    default:
-      return Colors.grey;
+    switch (normalized) {
+      case 'on-time':
+        return const Color(0xFF4CAF50);
+      case 'late':
+        return const Color(0xFFFFA726);
+      case 'absent':
+        return const Color(0xFFEF5350);
+      case 'half-day':
+        return const Color(0xFF42A5F5);
+      case 'weekend':
+        return const Color(0xFFAB47BC);
+      default:
+        return Colors.grey;
+    }
   }
-}
 
   String _capitalize(String text) {
-  final normalized = text.toLowerCase().replaceAll(' ', '-');
+    final normalized = text.toLowerCase().replaceAll(' ', '-');
 
-  switch (normalized) {
-    case 'on-time':
-      return 'On Time';
-    case 'half-day':
-      return 'Half Day';
-    case 'weekend':
-      return 'Weekend/Holiday';
+    switch (normalized) {
+      case 'on-time':
+        return 'On Time';
+      case 'half-day':
+        return 'Half Day';
+      case 'weekend':
+        return 'Weekend/Holiday';
+    }
+
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
   }
-
-  if (text.isEmpty) return text;
-  return text[0].toUpperCase() + text.substring(1);
-}
 
   @override
   Widget build(BuildContext context) {
-    final theme = AppTheme.of(isDarkMode);
-    final headerColor = theme.textSecondary;
-    final rowColor = theme.cardInnerBg;
-    final borderColor = theme.divider;
-    final textColor = theme.textPrimary;
+    final headerColor = isDarkMode ? Colors.grey[400]! : Colors.grey[700]!;
+    final borderColor =
+        isDarkMode ? const Color(0xFF333333) : const Color(0xFFE0E0E0);
+    final rowColor =
+        isDarkMode ? const Color(0xFF242424) : const Color(0xFFF9F9F9);
+    final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.cardBg,
+        color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: borderColor),
-        boxShadow: theme.cardShadow,
       ),
       child: Column(
         children: [
@@ -91,59 +90,61 @@ class InternTimeLogTable extends StatelessWidget {
                 child: Text(
                   'No records found.',
                   style: TextStyle(
-                    color: theme.textSecondary,
+                    color: textColor,
                     fontSize: 14,
                   ),
                 ),
               ),
             )
           else
-          ...logs.asMap().entries.map((entry) {
-            final index = entry.key;
-            final log = entry.value;
-            final isLast = index == logs.length - 1;
+            ...logs.asMap().entries.map((entry) {
+              final index = entry.key;
+              final log = entry.value;
+              final isLast = index == logs.length - 1;
 
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                border: isLast
-                    ? null
-                    : Border(bottom: BorderSide(color: borderColor)),
-              ),
-              child: Row(
-                children: [
-                  _dataCell(log['date'] ?? '–', flex: 2, color: textColor),
-                  _dataCell(log['day'] ?? '–', flex: 2, color: textColor),
-                  _dataCell(log['time_in'] ?? '–', flex: 2, color: textColor),
-                  _dataCell(log['time_out'] ?? '–', flex: 2, color: textColor),
-                  _dataCell(log['total_hours'] ?? '–',
-                      flex: 2, color: textColor),
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: _statusColor(log['status'] ?? ''),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          _capitalize(log['status'] ?? '–'),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  border: isLast
+                      ? null
+                      : Border(bottom: BorderSide(color: borderColor)),
+                ),
+                child: Row(
+                  children: [
+                    _dataCell(log['date'] ?? '–', flex: 2, color: textColor),
+                    _dataCell(log['day'] ?? '–', flex: 2, color: textColor),
+                    _dataCell(log['time_in'] ?? '–', flex: 2, color: textColor),
+                    _dataCell(log['time_out'] ?? '–',
+                        flex: 2, color: textColor),
+                    _dataCell(log['total_hours'] ?? '–',
+                        flex: 2, color: textColor),
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: _statusColor(log['status'] ?? ''),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            _capitalize(log['status'] ?? '–'),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                  ],
+                ),
+              );
+            }),
         ],
       ),
     );
