@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/Developer-Page-Widgets/placeholder_card.dart';
 import '../widgets/Developer-Page-Widgets/janna_id_card.dart';
+import '../widgets/Developer-Page-Widgets/nathaniel_id_card.dart';
 
 class DeveloperTeamPage extends StatelessWidget {
   const DeveloperTeamPage({super.key});
@@ -148,7 +149,7 @@ class DeveloperTeamPage extends StatelessWidget {
                         SizedBox(width: 60),
                         Center(child: JannaIDCard()),
                         SizedBox(width: 60),
-                        Expanded(child: Center(child: PlaceholderCard())),
+                        Expanded(child: Center(child: NathanielIDCard())),
                       ],
                     ),
                   ),
