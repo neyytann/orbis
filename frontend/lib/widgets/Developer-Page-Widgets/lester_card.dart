@@ -27,7 +27,10 @@ class _LesterCardState extends State<LesterCard> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const LanyardWidget(color: Colors.black, height: 90),
+        const LanyardWidget(
+          color: Color.fromARGB(185, 158, 158, 158),
+          height: 90,
+        ),
         MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => _isHovered = true),
@@ -45,20 +48,28 @@ class _LesterCardState extends State<LesterCard> {
                     width: 260,
                     height: 390,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.65),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                        color: Colors.black.withOpacity(0.65),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.grey, width: 0.5)),
                     child: const Center(
-                      child: Text(
-                        'VIEW PROFILE',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          Text(
+                            'VIEW PROFILE',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ])),
                   ),
                 ),
               ],
@@ -92,7 +103,7 @@ class _ProfessionalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(51, 158, 158, 158)),
+        border: Border.all(color: const Color.fromARGB(120, 193, 193, 193)),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withOpacity(0.08),
@@ -111,15 +122,14 @@ class _ProfessionalCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 85,
+              height: 85,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 63, 63, 63),
+                color: const Color.fromARGB(255, 69, 69, 69),
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.12),
-                ),
+                border:
+                    Border.all(color: const Color.fromARGB(144, 54, 54, 54)),
               ),
               child: Image.asset(
                 'assets/images/lester.png',
