@@ -48,7 +48,7 @@ class _NathanielIDCardState extends State<NathanielIDCard> {
                     width: 260,
                     height: 390,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF64FFDA).withOpacity(0.08),
+                      color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.55),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: const Color(0xFF64FFDA).withOpacity(0.5),
@@ -120,19 +120,7 @@ class _NathanielCardFace extends StatelessWidget {
         color: _bgCard,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _border),
-        boxShadow: [
-          BoxShadow(
-            color: _accent.withOpacity(0.08),
-            blurRadius: 32,
-            spreadRadius: 2,
-            offset: const Offset(0, 10),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.6),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
+        boxShadow: [],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -348,7 +336,7 @@ class _NathanielCardFace extends StatelessWidget {
                   const SizedBox(height: 5),
                   Center(
                     child: Text(
-                      'DEV-2026-180',
+                      'DEV-2026-181',
                       style: TextStyle(
                         fontSize: 8,
                         color: _textMuted.withOpacity(0.45),
